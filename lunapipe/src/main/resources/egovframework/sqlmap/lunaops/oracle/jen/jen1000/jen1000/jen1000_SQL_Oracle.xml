@@ -3,81 +3,134 @@
 
 <sqlMap namespace="jen1000DAO">
 	<typeAlias alias="egovMap" 		type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
-	<typeAlias alias="Jen1000VO"	type="kr.opensoftlab.lunaops.stm.jen1000.jen1000.vo.Jen1000VO"/>
-	<typeAlias alias="Jen1100VO"	type="kr.opensoftlab.lunaops.stm.jen1000.jen1000.vo.Jen1100VO"/>
+	<typeAlias alias="oslSnakeMap" 		type="kr.opensoftlab.sdf.util.OslSnakeMap"/>
+	<typeAlias alias="Jen1000VO"	type="kr.opensoftlab.lunaops.jen.jen1000.jen1000.vo.Jen1000VO"/>
+	<typeAlias alias="Jen1100VO"	type="kr.opensoftlab.lunaops.jen.jen1000.jen1000.vo.Jen1100VO"/>
+	<typeAlias alias="BuildVO"		type="kr.opensoftlab.sdf.jenkins.vo.BuildVO"/>
 
 	<resultMap id="resultMapSelectJen1000" class="Jen1000VO">
 		<result property="rn"  			      column="RN"/>
-		<result property="jenId"              column="JEN_ID" />  
-		<result property="jenNm"              column="JEN_NM" />  
-		<result property="jenUsrId"           column="JEN_USR_ID" />  
-		<result property="jenUsrTok"          column="JEN_USR_TOK" /> 
-		<result property="jenUrl"             column="JEN_URL" />  
-		<result property="jenDesc"             column="JEN_DESC" />  
-		<result property="useCd"              column="USE_CD" />  
-		<result property="delCd"              column="DEL_CD" />  
-		<result property="useNm"              column="USE_NM" /> 
-		<result property="regDtm"             column="REG_DTM" />  
-		<result property="regUsrId"           column="REG_USR_ID" />  
-		<result property="regUsrIp"           column="REG_USR_IP" />  
-		<result property="modifyDtm"          column="MODIFY_DTM" />  
-		<result property="modifyUsrId"        column="MODIFY_USR_ID" />  
-		<result property="modifyUsrIp"        column="MODIFY_USR_IP" />  
+		<result property="jenId"              column="JEN_ID" /> <!-- JENKINS 코드 --> 
+		<result property="jenNm"              column="JEN_NM" /> <!-- JENKINS 명 --> 
+		<result property="jenUsrId"           column="JEN_USR_ID" /> <!-- JENKINS 사용자 ID --> 
+		<result property="jenUsrTok"          column="JEN_USR_TOK" /> <!-- JENKINS 사용자 TOKEN KEY -->
+		<result property="jenUrl"             column="JEN_URL" /> <!-- JENKINS URL --> 
+		<result property="jenDesc"             column="JEN_DESC" /> <!-- JENKINS Comment --> 
+		<result property="useCd"              column="USE_CD" /> <!-- 사용여부(코드 : CMM00001) --> 
+		<result property="delCd"              column="DEL_CD" /> <!-- 사용여부(코드 : CMM00001) --> 
+		<result property="useNm"              column="USE_NM" /> <!-- 사용여부(코드 : CMM00001) -->
+		<result property="regDtm"             column="REG_DTM" /> <!-- 최초등록 일시 --> 
+		<result property="regUsrId"           column="REG_USR_ID" /> <!-- 최초등록자 ID --> 
+		<result property="regUsrIp"           column="REG_USR_IP" /> <!-- 최초등록자 IP --> 
+		<result property="modifyDtm"          column="MODIFY_DTM" /> <!-- 최종수정일시 --> 
+		<result property="modifyUsrId"        column="MODIFY_USR_ID" /> <!-- 최종수정자 ID --> 
+		<result property="modifyUsrIp"        column="MODIFY_USR_IP" /> <!-- 최종수정자 IP --> 
     </resultMap>
     
         
 	<resultMap id="resultMapSelectJen1100" class="Jen1100VO">
 		<result property="rn"  			      column="RN"/>
-		<result property="jenId"              column="JEN_ID" />  
-		<result property="jenNm"              column="JEN_NM" />  
-		<result property="jenUsrId"           column="JEN_USR_ID" />  
-		<result property="jenUsrTok"          column="JEN_USR_TOK" /> 
-		<result property="jenUrl"             column="JEN_URL" />  
-		<result property="jobId"              column="JOB_ID" />  
-		<result property="jobRestoreId"       column="JOB_RESTORE_ID" />  
-		<result property="jobTok"          	  column="JOB_TOK" /> 
-		<result property="jobParameter"	  	  column="JOB_PARAMETER" />  
-		<result property="jobDesc"            column="JOB_DESC" />  
-		<result property="jobTypeCd"          column="JOB_TYPE_CD" /> 
-		<result property="jobTypeNm"          column="JOB_TYPE_NM" /> 
-		<result property="useCd"              column="USE_CD" />  
-		<result property="useNm"              column="USE_NM" /> 
-		<result property="regDtm"             column="REG_DTM" />  
-		<result property="regUsrId"           column="REG_USR_ID" />  
-		<result property="regUsrIp"           column="REG_USR_IP" />  
-		<result property="modifyDtm"          column="MODIFY_DTM" />  
-		<result property="modifyUsrId"        column="MODIFY_USR_ID" />  
-		<result property="modifyUsrIp"        column="MODIFY_USR_IP" />  
+		<result property="jenId"              column="JEN_ID" /> <!-- JENKINS 코드 --> 
+		<result property="jenNm"              column="JEN_NM" /> <!-- JENKINS 명 --> 
+		<result property="jenUsrId"           column="JEN_USR_ID" /> <!-- JENKINS 사용자 ID --> 
+		<result property="jenUsrTok"          column="JEN_USR_TOK" /> <!-- JENKINS 사용자 TOKEN KEY -->
+		<result property="jenUrl"             column="JEN_URL" /> <!-- JENKINS URL --> 
+		<result property="jenDesc"             column="JEN_DESC" /> <!-- JENKINS URL --> 
+		<result property="jenUseCd"             column="JEN_USE_CD" /> <!-- JENKINS URL --> 
+		<result property="jobId"              column="JOB_ID" /> <!-- JOB ID(NAME) --> 
+		<result property="jobPath"              column="JOB_PATH" /> <!-- JOB PATH(FULL NAME) --> 
+		<result property="jobRestoreId"       column="JOB_RESTORE_ID" /> <!-- 원복 JOB ID(NAME)  --> 
+		<result property="jobTok"          	  column="JOB_TOK" /> <!-- JOB TOKEN KEY -->
+		<result property="jobDesc"            column="JOB_DESC" /> <!-- JOB Comment --> 
+		<result property="jobUrl"            column="JOB_URL" /> <!-- JOB URL --> 
+		<result property="jobTypeCd"          column="JOB_TYPE_CD" /> <!-- JOB TYPE(코드 : DPL00002) -->
+		<result property="jobTypeNm"          column="JOB_TYPE_NM" /> <!-- JOB TYPE(코드 : DPL00002) -->
+		<result property="useCd"              column="USE_CD" /> <!-- 사용여부(코드 : CMM00001) --> 
+		<result property="useNm"              column="USE_NM" /> <!-- 사용여부(코드 : CMM00001) -->
+		<result property="lastBldNum"              column="LAST_BLD_NUM" />
+		<result property="lastBldClass"              column="LAST_BLD_CLASS" />
+		<result property="lastBldResult"              column="LAST_BLD_RESULT" />
+		<result property="lastBldDurationTm"              column="LAST_BLD_DURATION_TM" />
+		<result property="lastBldStartDtm"              column="LAST_BLD_START_DTM" />
+		<result property="regDtm"             column="REG_DTM" /> <!-- 최초등록 일시 --> 
+		<result property="regUsrId"           column="REG_USR_ID" /> <!-- 최초등록자 ID --> 
+		<result property="regUsrIp"           column="REG_USR_IP" /> <!-- 최초등록자 IP --> 
+		<result property="modifyDtm"          column="MODIFY_DTM" /> <!-- 최종수정일시 --> 
+		<result property="modifyUsrId"        column="MODIFY_USR_ID" /> <!-- 최종수정자 ID --> 
+		<result property="modifyUsrIp"        column="MODIFY_USR_IP" /> <!-- 최종수정자 IP --> 
     </resultMap>
     
-    
+    <!-- JOB 빌드 이력 Map Define -->
+    <resultMap id="resultMapSelectJen1200" class="egovMap">
+		<result property="jenId" column="JEN_ID" />
+		<result property="jenNm" column="JEN_NM" />
+		<result property="jenUrl" column="JEN_URL" />
+		<result property="jenUsrId" column="JEN_USR_ID" />
+		<result property="jenUsrTok" column="JEN_USR_TOK" />
+		<result property="jenDesc" column="JEN_DESC" />
+		<result property="jobId" column="JOB_ID" />
+		<result property="jobTypeCd" column="JOB_TYPE_CD" />
+		<result property="jobTypeNm" column="JOB_TYPE_NM" />
+		<result property="jobUrl" column="JOB_URL" />
+		<result property="jobTriggerCd" column="JOB_TRIGGER_CD" />
+		<result property="jobDesc" column="JOB_DESC" />
+		<result property="bldNum" column="BLD_NUM" />
+		<result property="bldClass" column="BLD_CLASS" />
+		<result property="bldResult" column="BLD_RESULT"/>
+		<result property="bldResultCd" column="BLD_RESULT_CD" />
+		<result property="bldEtmDurationTm" column="BLD_ETM_DURATION_TM" />
+		<result property="bldDurationTm" column="BLD_DURATION_TM" />
+		<result property="bldStartDtm" column="BLD_START_DTM" />
+		<result property="bldConsoleLog" column="BLD_CONSOLE_LOG" jdbcType="CLOB" javaType="java.lang.String"/>
+		<result property="bldCauses" column="BLD_CAUSES"/>
+		<result property="bldParamCnt" column="BLD_PARAM_CNT"/>
+		<result property="bldActionLog" column="BLD_ACTION_LOG"/>
+		<!-- 
+		<result property="regDtm" column="REG_DTM" />
+		<result property="regUsrId" column="REG_USR_ID" />
+		<result property="regUsrIp" column="REG_USR_IP" />
+		<result property="modifyDtm" column="MODIFY_DTM" />
+		<result property="modifyUsrId" column="MODIFY_USR_ID" />
+		<result property="modifyUsrIp" column="MODIFY_USR_IP" />
+		 -->
+	</resultMap>
 	
-	
-	
+	<!-- sql Define  -->
+	<!-- Jenkins 목록 조회 -->
 	<sql id="selectJen1000JenkinsList">
 		<![CDATA[
 			SELECT
-		            JEN_ID ,                  /* JENKINS JOB 코드 */ 
-		            JEN_NM ,                  /* JENKINS JOB 명 */ 
-		            JEN_USR_ID ,              /* JENKINS 사용자 ID */ 
-		            JEN_USR_TOK ,             /* JENKINS 사용자 TOKEN KEY */ 
-		            JEN_URL ,
-		            REPLACE (JEN_DESC ,'<br>' , '&nbsp;&nbsp;&nbsp;&nbsp;' ) AS JEN_DESC ,                 /* JENKINS JOB Comment */ 
-		            USE_CD ,                  /* 사용여부(코드 : CMM00001) */
-		            SF_CMM1000_COM_CD_INFO('CMM00001', USE_CD, '1') as USE_NM ,
-		            DEL_CD , 
-		            REG_DTM ,                 /* 최초등록 일시 */ 
-		            REG_USR_ID ,              /* 최초등록자 ID */ 
-		            REG_USR_IP ,              /* 최초등록자 IP */ 
-		            MODIFY_DTM ,              /* 최종수정일시 */ 
-		            MODIFY_USR_ID ,           /* 최종수정자 ID */ 
-		            MODIFY_USR_IP             /* 최종수정자 IP */              
+		            A.JEN_ID ,                  /* JENKINS JOB 코드 */ 
+		            A.JEN_NM ,                  /* JENKINS JOB 명 */ 
+		            A.JEN_USR_ID ,              /* JENKINS 사용자 ID */ 
+		            A.JEN_USR_TOK ,             /* JENKINS 사용자 TOKEN KEY */ 
+		            A.JEN_URL ,
+		            REPLACE (A.JEN_DESC ,'<br>' , '&nbsp;&nbsp;&nbsp;&nbsp;' ) AS JEN_DESC ,                 /* JENKINS JOB Comment */ 
+		            A.USE_CD ,                  /* 사용여부(코드 : CMM00001) */
+		            SF_CMM1001_COM_CD_INFO('CMM00001', A.USE_CD, '1') as USE_NM ,
+		            A.DEL_CD , 
+		            A.REG_DTM ,                 /* 최초등록 일시 */ 
+		            A.REG_USR_ID ,              /* 최초등록자 ID */ 
+		            A.REG_USR_IP ,              /* 최초등록자 IP */ 
+		            A.MODIFY_DTM ,              /* 최종수정일시 */ 
+		            A.MODIFY_USR_ID ,           /* 최종수정자 ID */ 
+		            A.MODIFY_USR_IP             /* 최종수정자 IP */              
 				   
 			FROM
-		            JEN1000
+		            JEN1000 A
 			WHERE   1=1
 			AND		DEL_CD ='02'
 		]]>
+		<isNotEmpty property="ciId">
+			AND EXISTS
+			(
+				SELECT *
+				FROM JEN1101 B
+				WHERE 1=1
+				AND B.CI_ID = #ciId#
+				AND B.JEN_ID = A.JEN_ID
+			)		
+		</isNotEmpty>
 		<isNotEmpty property="searchSelect">
 			<isNotEmpty property="searchTxt">
 			<isEqual property="searchSelect" compareValue="jenNm"> 
@@ -98,9 +151,9 @@
 		</isNotEmpty>
     </sql>
     
-    
-	
-	<sql id="selectJen1000JobList">
+    <!-- sql Define  -->
+	<!-- Job 목록 조회 -->
+	<sql id="selectJen1100JobList">
 		<![CDATA[
 			SELECT
 		            A.JEN_ID ,                  /* JENKINS JOB 코드 */
@@ -108,15 +161,23 @@
 		            B.JEN_USR_ID ,              /* JENKINS 사용자 ID */ 
 		            B.JEN_USR_TOK ,             /* JENKINS 사용자 TOKEN KEY */ 
 		            B.JEN_URL , 
+		            B.JEN_DESC ,
+		            B.USE_CD AS JEN_USE_CD ,
 		            A.JOB_ID ,
+		            A.JOB_PATH ,
 		            NVL(A.JOB_RESTORE_ID,'-') AS JOB_RESTORE_ID ,
 		            A.JOB_TOK ,
 		            A.JOB_TYPE_CD ,
-		            SF_CMM1000_COM_CD_INFO('DPL00002', A.JOB_TYPE_CD, '1') AS JOB_TYPE_NM ,
-		            A.JOB_PARAMETER,
+		            SF_CMM1001_COM_CD_INFO('DPL00002', A.JOB_TYPE_CD, '1') AS JOB_TYPE_NM ,
 		            A.JOB_DESC ,
+		            A.JOB_URL ,
 		            A.USE_CD ,                  /* 사용여부(코드 : CMM00001) */
-		            SF_CMM1000_COM_CD_INFO('CMM00001', A.USE_CD, '1') AS USE_NM , 
+		            SF_CMM1001_COM_CD_INFO('CMM00001', A.USE_CD, '1') AS USE_NM ,
+		            C.BLD_NUM  AS LAST_BLD_NUM,
+		            C.BLD_CLASS AS LAST_BLD_CLASS ,
+		            C.BLD_RESULT AS LAST_BLD_RESULT ,
+		            C.BLD_DURATION_TM AS LAST_BLD_DURATION_TM ,
+		            C.BLD_START_DTM AS LAST_BLD_START_DTM , 
 		            A.REG_DTM ,                 /* 최초등록 일시 */ 
 		            A.REG_USR_ID ,              /* 최초등록자 ID */ 
 		            A.REG_USR_IP ,              /* 최초등록자 IP */ 
@@ -125,19 +186,25 @@
 		            A.MODIFY_USR_IP             /* 최종수정자 IP */              
 			FROM
 		            JEN1100 A LEFT JOIN JEN1000 B ON(A.JEN_ID = B.JEN_ID)
+		            LEFT JOIN 
+	                (
+						SELECT Z.*
+						FROM JEN1200 Z INNER JOIN (SELECT JEN_ID, JOB_ID, MAX(BLD_NUM) AS BLD_NUM FROM JEN1200 GROUP BY JEN_ID, JOB_ID) Y
+						ON ( Z.JEN_ID = Y.JEN_ID AND Z.JOB_ID = Y.JOB_ID AND Z.BLD_NUM = Y.BLD_NUM )
+	                ) C ON (A.JEN_ID = C.JEN_ID AND A.JOB_ID = C.JOB_ID)
 			WHERE   1=1
 			AND		B.DEL_CD = '02'
 		]]>
-		<isNotEmpty property="projectJenkinsCheck">
-			<isEqual property="projectJenkinsCheck" compareValue="Y">
-				AND	EXISTS (
-	            	SELECT Z.*
-	                FROM JEN1200 Z
-	                WHERE 1=1
-	                AND Z.JEN_ID = A.JEN_ID
-	                AND Z.JOB_ID = A.JOB_ID
-	            )
-			</isEqual>
+		<isNotEmpty property="ciId">
+			AND EXISTS
+			(
+				SELECT *
+				FROM JEN1101 C
+				WHERE 1=1
+				AND C.CI_ID = #ciId#
+				AND C.JEN_ID = A.JEN_ID
+				AND C.JOB_ID = A.JOB_ID
+			)		
 		</isNotEmpty>
 		<isNotEmpty property="jenId">
 			AND		A.JEN_ID = #jenId#
@@ -161,14 +228,47 @@
 		
 		<isNotEmpty property="searchSelect">
 			<isNotEmpty property="searchCd">
-			<isEqual property="searchSelect" compareValue="useCd">
-				AND		A.USE_CD = #searchCd#
-			</isEqual>
+				<isEqual property="searchSelect" compareValue="useCd">
+					AND		A.USE_CD = #searchCd#
+				</isEqual>
+				<isEqual property="searchSelect" compareValue="jobTypeCd">
+					AND		A.JOB_TYPE_CD = #searchCd#
+				</isEqual>
 			</isNotEmpty>
 		</isNotEmpty>
+		ORDER BY A.JOB_ID, C.BLD_START_DTM DESC
     </sql>
     
-    
+    <!-- JOB 기본 파라미터 조회 -->
+    <sql id="jen1000DAO.selectJen1105JobParamList">
+		SELECT T1.*, @ROWNUM := @ROWNUM + 1 AS RN
+		FROM
+		(
+				SELECT T1.*
+				FROM
+				(
+					SELECT 
+				             A.CI_ID
+				            ,A.JEN_ID
+				            ,A.JOB_ID
+				            ,A.JOB_PARAM_KEY
+				            ,A.JOB_PARAM_VAL
+				            ,A.REG_DTM
+				            ,A.REG_USR_ID
+				            ,A.REG_USR_IP
+				            ,A.MODIFY_DTM
+				            ,A.MODIFY_USR_ID
+				            ,A.MODIFY_USR_IP
+				    FROM JEN1102 A
+				    WHERE 1=1
+					    AND A.CI_ID = #ciId#
+					    AND A.JEN_ID = #jenId#
+					    AND A.JOB_ID = #jobId#
+					
+				) T1 INNER JOIN (SELECT @ROWNUM := 0) R
+		) T1
+	</sql>
+    <!-- Jenkins 일반 목록 조회 -->
     <select id="jen1000DAO.selectJen1000JenkinsNormalList" parameterClass="java.util.Map"  resultClass="egovMap">
 	    /* jen1000DAO.selectJen1000JenkinsNormalList Jenkins 일반 목록을 조회한다.*/
 		SELECT *
@@ -183,9 +283,9 @@
 	    	)
     </select>
     
-    
-    <select id="jen1000DAO.selectJen1000JobNormalList" parameterClass="java.util.Map"  resultClass="egovMap">
-	    /* jen1000DAO.selectJen1000JobNormalList Job 일반 목록을 조회한다.*/
+    <!-- Job 일반 목록 조회 -->
+    <select id="jen1000DAO.selectJen1100JobNormalList" parameterClass="java.util.Map"  resultClass="egovMap">
+	    /* jen1000DAO.selectJen1100JobNormalList Job 일반 목록을 조회한다.*/
 		SELECT *
 		FROM
 			(
@@ -193,65 +293,65 @@
     			     A.*
     		FROM
     		(
-					<include refid="selectJen1000JobList"/>
+					<include refid="selectJen1100JobList"/>
 	    			) A
 	    	)
     </select>
     
-    
+    <!-- Jenkins 목록 조회 -->
     <select id="jen1000DAO.selectJen1000JenkinsList" parameterClass="Jen1000VO"  resultMap="resultMapSelectJen1000">
 	    /* jen1000DAO.selectJen1000JenkinsList Jenkins 목록을 조회한다.*/
 		SELECT *
 		FROM
 			(
     		SELECT ROWNUM RN,
-    			     A.*
+    			     SUBT1.*
     		FROM
     		(
 					<include refid="selectJen1000JenkinsList"/>
-	    			) A
+	    			) SUBT1
 	    	)
 	    	 WHERE RN BETWEEN (#firstIndex#+1) AND #lastIndex#
     </select>
     
-    
+    <!-- Jenkins 목록 총건수. :페이징 처리 부분 -->
     <select id="jen1000DAO.selectJen1000JenkinsListCnt" parameterClass="Jen1000VO"  resultClass="java.lang.Integer">
 	    /*jen1000DAO.selectJen1000JenkinsListCnt Jenkins 목록 총건수를 조회한다.*/
 	    	SELECT
 					COUNT(*)
 			FROM	(
 						<include refid="selectJen1000JenkinsList"/>
-					) A
+					) SUBT1
     </select>
     
-    
-    <select id="jen1000DAO.selectJen1000JobList" parameterClass="Jen1100VO"  resultMap="resultMapSelectJen1100">
-	    /* jen1000DAO.selectJen1000JobList job 목록을 조회한다.*/
+    <!-- job 목록 조회 -->
+    <select id="jen1000DAO.selectJen1100JobList" parameterClass="Jen1100VO"  resultMap="resultMapSelectJen1100">
+	    /* jen1000DAO.selectJen1100JobList job 목록을 조회한다.*/
 		SELECT *
 		FROM
 			(
     		SELECT ROWNUM RN,
-    			     A.*
+    			     SUBT1.*
     		FROM
     		(
-					<include refid="selectJen1000JobList"/>
-	    			) A
+					<include refid="selectJen1100JobList"/>
+	    			) SUBT1
 	    	)
 	    	 WHERE RN BETWEEN (#firstIndex#+1) AND #lastIndex#
     </select>
     
-    
-    <select id="jen1000DAO.selectJen1000JobListCnt" parameterClass="Jen1100VO"  resultClass="java.lang.Integer">
-	    /*jen1000DAO.selectJen1000JobListCnt job 목록 총건수를 조회한다.*/
+    <!-- job 목록 총건수. :페이징 처리 부분 -->
+    <select id="jen1000DAO.selectJen1100JobListCnt" parameterClass="Jen1100VO"  resultClass="java.lang.Integer">
+	    /*jen1000DAO.selectJen1100JobListCnt job 목록 총건수를 조회한다.*/
 	    	SELECT
 					COUNT(*)
 			FROM	(
-						<include refid="selectJen1000JobList"/>
-					) A
+						<include refid="selectJen1100JobList"/>
+					) SUBT1
     </select>
     
 	 
-     
+    <!--  Jenkins 정보 조회  --> 
 	<select id="jen1000DAO.selectJen1000JenkinsInfo" parameterClass="java.util.Map"  resultClass="egovMap">
 		/* jen1000DAO.selectJen1000JenkinsInfo - Jenkins 정보 조회 */
 		SELECT *
@@ -262,18 +362,18 @@
 			AND T1.JEN_ID = #jenId#
 	</select>
 	 
-     
-	<select id="jen1000DAO.selectJen1000JobInfo" parameterClass="java.util.Map"  resultClass="egovMap">
-		/* jen1000DAO.selectJen1000JobInfo - Job 정보 조회(단건) */
+    <!--  Job 정보 조회(단건)  --> 
+	<select id="jen1000DAO.selectJen1100JobInfo" parameterClass="java.util.Map"  resultClass="egovMap">
+		/* jen1000DAO.selectJen1100JobInfo - Job 정보 조회(단건) */
 		SELECT *
 		FROM (
-			<include refid="selectJen1000JobList"/>
+			<include refid="selectJen1100JobList"/>
 		) T1
 		WHERE 1=1
 			AND T1.JOB_ID = #jobId#
 	</select>
 	
-	  
+	 <!--  Jenkins 등록  --> 
 	<insert id="jen1000DAO.insertJen1000JenkinsInfo" parameterClass="java.util.Map">
 		<selectKey resultClass="java.lang.String" keyProperty="newJenId">
 		<![CDATA[
@@ -330,10 +430,10 @@
 		]]>
 	</insert>
 	
-	  
-	<insert id="jen1000DAO.insertJen1000JobInfo" parameterClass="java.util.Map">
+	 <!--  Job 등록  --> 
+	<insert id="jen1000DAO.insertJen1100JobInfo" parameterClass="java.util.Map">
 		<![CDATA[ 
-			/* jen1000DAO.insertJen1000JobInfo  - Job 등록  */ 
+			/* jen1000DAO.insertJen1100JobInfo  - Job 등록  */ 
 				INSERT     INTO     JEN1100
 					(
 					            JEN_ID              , /* JENKINS JOB 코드 */ 
@@ -341,8 +441,10 @@
 					            JOB_RESTORE_ID 		, /* 원복 JOB ID */
 					            JOB_TOK 			, /* JOB TOKEN KEY */
 					            JOB_TYPE_CD			, /* JOB TYPE */
-					            JOB_PARAMETER 		, /* JOB 매개변수 */
 					            JOB_DESC 			, /* JOB DESC */
+					            JOB_URL 			, /* JOB URL */
+					            JOB_TRIGGER_CD		, /* JOB 스케줄 TRIGGER 사용 유무*/
+					            JOB_PATH			, /* JOB FULL PATH */
 					            USE_CD              , /* 사용여부(코드 : CMM00001) */ 
 					            REG_DTM             , /* 최초등록 일시 */ 
 					            REG_USR_ID          , /* 최초등록자 ID */ 
@@ -358,8 +460,10 @@
 					             #jobRestoreId#,
 					             #jobTok#,
 					             #jobTypeCd#,
-					             #jobParameter#, 
 					             #jobDesc#, 
+					             #jobUrl#, 
+					             #jobTriggerCd#,
+					             #jobPath#,
 					             #useCd#, 
 					             SYSDATE , 
 					             #regUsrId#, 
@@ -372,7 +476,7 @@
 		]]>
 	</insert>
     
-	
+	<!-- Jenkins 정보 수정 -->
 	<update id="jen1000DAO.updateJen1000JenkinsInfo" parameterClass="java.util.Map">
 		/* jen1000DAO.updateJen1000JenkinsInfo - Jenkins 정보 수정 */ 
 			UPDATE     JEN1000     SET 
@@ -392,17 +496,17 @@
 			  AND	   JEN_ID 		= 	#jenId#                /* JENKINS JOB 코드 */ 
 	</update>
     
-	
-	<update id="jen1000DAO.updateJen1000JobInfo" parameterClass="java.util.Map">
-		/* jen1000DAO.updateJen1000JobInfo - Job 정보 수정 */ 
+	<!-- Job 정보 수정 -->
+	<update id="jen1000DAO.updateJen1100JobInfo" parameterClass="java.util.Map">
+		/* jen1000DAO.updateJen1100JobInfo - Job 정보 수정 */ 
 			UPDATE     JEN1100     SET 
 			        JEN_ID = #jenId#            	  	, /* JENKINS JOB 코드 */ 
 			        JOB_ID = #jobId# 					, /* JOB ID */
 		            JOB_RESTORE_ID = #jobRestoreId# 	, /* 원복 JOB ID */
 		            JOB_TOK = #jobTok# 					, /* JOB TOKEN KEY */
 		            JOB_TYPE_CD = #jobTypeCd#			, /* JOB TYPE */
-		            JOB_PARAMETER = #jobParameter# 		, /* JOB 매개변수 */
 		            JOB_DESC = #jobDesc# 				, /* JOB DESC */
+		            JOB_TRIGGER_CD = #jobTriggerCd#		,
 			        USE_CD = #useCd#             		, /* 사용여부(코드 : CMM00001) */ 
 			        MODIFY_DTM = SYSDATE         	 	, /* 최종수정일시 */ 
 			        MODIFY_USR_ID = #modifyUsrId# 		, /* 최종수정자 ID */ 
@@ -412,7 +516,7 @@
 				AND	JOB_ID		=	#jobId#				/* JOB ID */
 	</update>
 	
-	
+	<!-- Jenkins 관리 삭제 -->
 	<update id="jen1000DAO.deleteJen1000JenkinsInfo" parameterClass="java.util.Map">
 		UPDATE     JEN1000     SET 
 		           DEL_CD = #delCd#              , /* 삭제유무(코드 : CMM00001) */ 
@@ -424,15 +528,15 @@
 		  AND	   JEN_ID 		= 	#jenId#                /* JENKINS JOB 코드 */ 
 	</update>
 	
-	
-	<delete id="jen1000DAO.deleteJen1000JobInfo" parameterClass="java.util.Map">
+	<!-- Job 삭제 -->
+	<delete id="jen1000DAO.deleteJen1100JobInfo" parameterClass="java.util.Map">
 		DELETE FROM	JEN1100 A
 		WHERE	1=1
 			AND	JEN_ID = #jenId#               /* JENKINS JOB 코드 */
 			AND	JOB_ID = #jobId# 
 	</delete>
 	
-	
+	<!-- Jenkins 등록 상태 확인 --> 
 	<select id="jen1000DAO.selectJen1000JenkinsUseCountInfo" parameterClass="java.util.Map"  resultClass="java.lang.Integer">
 		SELECT	COUNT(1) AS CNT
 		FROM 	JEN1000 A
@@ -441,8 +545,8 @@
 			AND	ROWNUM = 1
 	</select>
 	
-	
-	<select id="jen1000DAO.selectJen1000JobUseCountInfo" parameterClass="java.util.Map"  resultClass="java.lang.Integer">
+	<!-- Job 등록 상태 확인 -->
+	<select id="jen1000DAO.selectJen1100JobUseCountInfo" parameterClass="java.util.Map"  resultClass="java.lang.Integer">
 		SELECT	COUNT(1) AS CNT
 		FROM 	JEN1100 A
 		WHERE    1=1
@@ -451,4 +555,530 @@
 			AND	ROWNUM = 1
 	</select>
     
+	<!-- Jenkins JOB_RESTORE 삭제  -->
+	<update id="jen1000DAO.updateJen1100JenkinsJobRestoreInfo" parameterClass="java.util.Map">
+		/* jen1000DAO.updateJen1100JenkinsJobRestoreInfo - Jenkins JOB_RESTORE 삭제   */
+		<![CDATA[
+			UPDATE JEN1100 SET
+				JOB_RESTORE_ID = null
+			WHERE 1=1
+			AND JEN_ID 			= #jenId#
+			AND JOB_RESTORE_ID	= #jobId#
+		]]>	
+	</update>
+	
+	<!-- JOB 기본 파라미터 정보 등록-->
+	<insert id="jen1000DAO.insertJen1102ParameterInfo" parameterClass="java.util.Map">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1102ParameterInfo - 빌드 파라미터 등록  */
+			INSERT INTO JEN1102
+	        (
+	        	CI_ID					,JEN_ID					,JOB_ID
+	           ,JOB_PARAM_KEY			,JOB_PARAM_VAL
+	           ,REG_DTM					,REG_USR_ID			,REG_USR_IP
+	        )
+	        VALUES
+	        (
+	        	  #ciId#				,#jenId#				,#jobId#
+	           	 ,#jobParamKey#			,#jobParamVal#
+	        	 ,NOW()					,#regUsrId#			,#regUsrIp#
+	        )
+		]]>
+	</insert>
+	
+	<!-- JOB 기본 파라미터 정보 삭제 -->
+	<update id="jen1000DAO.deleteJen1102ParameterInfo" parameterClass="java.util.Map" >
+		/* jen1000DAO.deleteJen1102ParameterInfo - 빌드 파라미터 정보 삭제  */
+		DELETE FROM JEN1102
+       	WHERE	1=1
+       	<isNotEmpty property="ciId">
+        	AND		CI_ID = #ciId#
+       	</isNotEmpty>
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</update>
+	
+	<!-- CI, JENKINS&JOB 연결 정보 조회-->
+	<select id="jen1000DAO.selectJen1101CIJobList" parameterClass="java.util.Map" resultClass="oslSnakeMap">
+		/* jen1000DAO.selectJen1101CIJobList - 	CI, JENKINS JOB 연결 정보 조회  */
+		SELECT 
+			A.CI_ID
+			, A.JEN_ID
+			, B.JEN_NM
+			, B.JEN_URL
+			, B.JEN_DESC
+			, A.JOB_ID
+			, C.JOB_DESC
+			, C.JOB_URL
+			<!-- 
+			, A.REG_DTM
+            , A.REG_USR_ID
+            , A.REG_USR_IP
+            , A.MODIFY_DTM
+            , A.MODIFY_USR_ID
+            , A.MODIFY_USR_IP
+             -->
+		FROM JEN1101 A
+			LEFT JOIN JEN1000 B ON (A.JEN_ID = B.JEN_ID)
+			LEFT JOIN JEN1100 C ON (A.JEN_ID = C.JEN_ID AND A.JOB_ID = C.JOB_ID)
+		WHERE 1=1
+		AND A.CI_ID = #ciId# 
+	</select>
+	
+	<!-- CI, JENKINS&JOB 기본 빌드 파라미터 조회-->
+	<select id="jen1000DAO.selectJen1102CIJobParamList" parameterClass="java.util.Map" resultClass="oslSnakeMap">
+		/* jen1000DAO.selectJen1102CIJobParamList - 	CI, JENKINS JOB 기본 빌드 파라미터 조회  */
+		SELECT 
+			A.CI_ID
+			, A.JEN_ID
+			, A.JOB_ID
+			, A.JOB_PARAM_KEY
+			, A.JOB_PARAM_VAL
+		FROM JEN1102 A
+		WHERE 1=1
+		AND A.CI_ID = #ciId#
+		<isEmpty property="jenId">
+			<isEmpty property="jobId">
+				<isNotEmpty property="ciId">
+					AND EXISTS
+					(
+						SELECT *
+						FROM JEN1101 B
+						WHERE 1=1
+						AND B.CI_ID = A.CI_ID
+						AND B.JEN_ID = A.JEN_ID
+						AND B.JOB_ID = A.JOB_ID
+					)		
+				</isNotEmpty>
+			</isEmpty>
+		</isEmpty>
+		<isNotEmpty property="jenId">
+			AND A.JEN_ID = #jenId#		
+			<isNotEmpty property="jobId">
+				AND A.JOB_ID = #jobId#		
+			</isNotEmpty>
+		</isNotEmpty>
+	</select>
+	
+	<!-- CI, JENKINS&JOB 연결 정보 삭제 -->
+	<delete id="jen1000DAO.deleteJen1101CIJobInfo" parameterClass="java.util.Map">
+		/* jen1000DAO.deleteJen1101CIJobInfo - CI, JENKINS JOB 연결 정보 삭제 */ 
+		DELETE FROM	JEN1101
+		WHERE 1=1
+		<isNotEmpty property="ciId">
+        	AND		CI_ID = #ciId#
+       	</isNotEmpty>
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</delete>
+	
+	<!-- CI, JENKINS&JOB 연결 정보 저장 -->
+	<insert id="jen1000DAO.insertJen1101CIJobInfo" parameterClass="java.util.Map">
+		/* jen1000DAO.insertJen1101CIJobInfo - CI, JENKINS JOB 연결 정보 저장 */ 
+		INSERT INTO JEN1101 (
+			CI_ID,				JEN_ID,				JOB_ID
+			,REG_DTM,			REG_USR_ID,			REG_USR_IP
+            ,MODIFY_DTM,		MODIFY_USR_ID,		MODIFY_USR_IP
+		)
+		VALUES (
+			#ciId#,				#jenId#,			#jobId#
+			,SYSDATE,			#regUsrId#,			#regUsrIp#
+			,SYSDATE,			#regUsrId#,			#regUsrIp#
+		)
+	</insert>
+
+	<!-- 빌드 이력 있는지 체크 -->
+	<select id="jen1000DAO.selectJen1200JobBldLogCheck" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+			/* jen1000DAO.selectJen1200JobBldLogCheck - 빌드 이력 있는지 체크  */
+			SELECT COUNT(*) AS CNT
+			FROM JEN1200 A
+			WHERE 1=1
+			AND A.JEN_ID = #jenId#
+			AND A.JOB_ID = #jobId#
+			AND A.BLD_NUM = #bldNum#
+	</select>
+	
+	<!-- JOB 빌드 이력 등록-->
+	<insert id="jen1000DAO.insertJen1200JobBldLogInfo" parameterClass="java.util.Map">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1200JobBldLogInfo - JOB 빌드 이력 등록  */
+			INSERT INTO JEN1200
+			(
+				JEN_ID			,JOB_ID					,BLD_NUM
+				,BLD_CLASS		,BLD_RESULT				,BLD_RESULT_CD
+				,BLD_ETM_DURATION_TM	,BLD_DURATION_TM
+				,BLD_START_DTM	,BLD_CONSOLE_LOG		,BLD_CAUSES
+				,REG_DTM
+					    
+			)
+			VALUES
+			(
+				#jenId#			,#jobId#				,#bldNum#
+				,#bldClass#		,#bldResult#			,#bldResultCd#
+				,#bldEtmDurationTm#		,#bldDurationTm#
+				,#bldStartDtm#	,#bldConsoleLog#		,#bldCauses#		
+				,SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- JOB 빌드 변경 정보 등록-->
+	<insert id="jen1000DAO.insertJen1201JobBldChangeLogInfo" parameterClass="java.util.Map">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1201JobBldChangeLogInfo - JOB 빌드 변경 정보 등록  */
+			INSERT INTO JEN1201
+			(
+				JEN_ID			,JOB_ID					,BLD_NUM
+				,CHG_REVISION	,CHG_TIMESTAMP			,CHG_DATE
+				,CHG_MSG		,CHG_USER				,REG_DTM
+					    
+			)
+			VALUES
+			(
+				#jenId#			,#jobId#				,#bldNum#
+				,#chgRevision#	,#chgTimestamp#			,#chgDate#
+				,#chgMsg#		,#chgUser#				,SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- JOB 빌드 변경 파일 정보 등록-->
+	<insert id="jen1000DAO.insertJen1202JobBldChangeFileLogInfo" parameterClass="java.util.Map">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1202JobBldChangeFileLogInfo - JOB 빌드 변경 파일 정보 등록  */
+			INSERT INTO JEN1202
+			(
+				JEN_ID			,JOB_ID					,BLD_NUM
+				,CHG_REVISION	,FILE_PATH				,EDIT_TYPE_CD
+				,REG_DTM
+					    
+			)
+			VALUES
+			(
+				#jenId#			,#jobId#				,#bldNum#
+				,#chgRevision#	,#filePath#				,#editTypeCd#
+				,SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- JOB 빌드 파라미터 등록-->
+	<insert id="jen1000DAO.insertJen1203JobBldParameterInfo" parameterClass="java.util.Map">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1203JobBldParameterInfo - JOB 빌드 파라미터 등록  */
+			INSERT INTO JEN1203
+			(
+				JEN_ID			,JOB_ID					,BLD_NUM
+				,JOB_PARAM_KEY	,JOB_PARAM_VAL
+				,REG_DTM
+					    
+			)
+			VALUES
+			(
+				#jenId#			,#jobId#				,#bldNum#
+				,#jobParamKey#	,#jobParamVal#
+				,SYSDATE
+			)
+		]]>
+	</insert>
+	
+	<!-- JOB 빌드 파라미터 조회-->
+	<select id="jen1000DAO.selectJen1203JobBuildParamList" parameterClass="java.util.Map" resultClass="egovMap">
+		/* jen1000DAO.selectJen1203JobBuildParamList - JOB 빌드 파라미터 조회 */
+		SELECT
+			A.JEN_ID
+			, A.JOB_ID
+			, A.BLD_NUM
+			, A.JOB_PARAM_KEY
+			, A.JOB_PARAM_VAL
+		FROM JEN1203 A
+		WHERE 1=1
+		AND A.JEN_ID = #jenId#
+		AND A.JOB_ID = #jobId#
+		AND A.BLD_NUM = #bldNum#
+	</select>
+	
+	<!-- JOB 빌드 이력 목록 조회 (console 제외 - 별도 조회 필요)-->
+	<select id="jen1000DAO.selectJen1200JobBuildList" parameterClass="java.util.Map" resultClass="egovMap">
+		/* jen1000DAO.selectJen1200JobBuildList - JOB 빌드 이력 목록 조회 (console 제외 - 별도 조회 필요)  */
+		SELECT SUBT2.*
+		FROM
+		(
+			SELECT
+				ROWNUM AS RN
+				, SUBT1.*
+			FROM
+			(
+				SELECT
+					A.JEN_ID
+					, C.JEN_NM
+					, C.JEN_URL
+					, C.JEN_USR_ID
+					, C.JEN_USR_TOK
+					, C.JEN_DESC
+					, A.JOB_ID
+					, D.JOB_TYPE_CD
+					, SF_CMM1001_COM_CD_INFO('DPL00002', D.JOB_TYPE_CD, '1') AS JOB_TYPE_NM
+					, D.JOB_URL
+					, D.JOB_TRIGGER_CD
+					, D.JOB_DESC
+					, A.BLD_NUM
+					, A.BLD_CLASS
+					, A.BLD_RESULT
+					, A.BLD_RESULT_CD
+					, A.BLD_ETM_DURATION_TM
+					, A.BLD_DURATION_TM
+					, A.BLD_START_DTM
+					, A.BLD_CAUSES
+					, (SELECT COUNT(*) AS CNT FROM JEN1201 WHERE JEN_ID = A.JEN_ID AND JOB_ID = A.JOB_ID AND BLD_NUM = A.BLD_NUM) AS BLD_CHG_CNT
+				FROM JEN1200 A
+				INNER JOIN JEN1000 C ON (A.JEN_ID = C.JEN_ID)
+				INNER JOIN JEN1100 D ON (A.JEN_ID = D.JEN_ID AND A.JOB_ID = D.JOB_ID)
+				WHERE 1=1
+					AND A.JEN_ID = #jenId#
+					AND A.JOB_ID = #jobId#
+				ORDER BY A.BLD_NUM DESC
+			) SUBT1
+		) SUBT2
+		WHERE SUBT2.RN BETWEEN (#firstIndex#+1) AND #lastIndex#
+	</select>
+	
+	<!-- JOB 빌드 이력 목록 개수 -->
+	<select id="jen1000DAO.selectJen1200JobBuildListCnt" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		/* jen1000DAO.selectJen1200JobBuildListCnt - JOB 빌드 이력 목록 개수  */
+		SELECT SUBT1.CNT
+		FROM
+		(
+			SELECT COUNT(*) AS CNT
+			FROM JEN1200 A
+			INNER JOIN JEN1000 C ON (A.JEN_ID = C.JEN_ID)
+			INNER JOIN JEN1100 D ON (A.JEN_ID = D.JEN_ID AND A.JOB_ID = D.JOB_ID)
+			WHERE 1=1
+				AND A.JEN_ID = #jenId#
+				AND A.JOB_ID = #jobId#
+			ORDER BY A.BLD_NUM DESC
+		) SUBT1
+	</select>
+	
+	<!-- JOB 마지막 빌드 이력 조회-->
+	<select id="jen1000DAO.selectJen1200JobLastBuildInfo" parameterClass="java.util.Map" resultMap="resultMapSelectJen1200">
+		/* jen1000DAO.selectJen1200JobLastBuildInfo - JOB 마지막 빌드 이력 조회  */
+		SELECT
+			A.JEN_ID
+			, C.JEN_NM
+			, C.JEN_URL
+			, C.JEN_USR_ID
+			, C.JEN_USR_TOK
+			, C.JEN_DESC
+			, A.JOB_ID
+			, D.JOB_TYPE_CD
+			, SF_CMM1001_COM_CD_INFO('DPL00002', D.JOB_TYPE_CD, '1') AS JOB_TYPE_NM
+			, D.JOB_URL
+			, D.JOB_TRIGGER_CD
+			, D.JOB_DESC
+			, A.CI_ID
+			, A.TICKET_ID
+			, A.DPL_ID
+			, A.BLD_NUM
+			, A.BLD_CLASS
+			, A.BLD_RESULT
+			, A.BLD_RESULT_CD
+			, A.BLD_ETM_DURATION_TM
+			, A.BLD_DURATION_TM
+			, A.BLD_START_DTM
+			, A.BLD_CONSOLE_LOG
+			, A.BLD_CAUSES
+			, A.BLD_ACTION_LOG
+			, (SELECT COUNT(*) FROM JEN1203 WHERE JEN_ID = A.JEN_ID AND JOB_ID = A.JOB_ID AND BLD_NUM = A.BLD_NUM) AS BLD_PARAM_CNT
+		FROM JEN1200 A INNER JOIN (SELECT JEN_ID, JOB_ID, MAX(BLD_NUM) AS BLD_NUM FROM JEN1200 GROUP BY JEN_ID, JOB_ID) B
+			ON ( A.JEN_ID = B.JEN_ID AND A.JOB_ID = B.JOB_ID AND A.BLD_NUM = B.BLD_NUM )
+		INNER JOIN JEN1000 C ON (A.JEN_ID = C.JEN_ID)
+		INNER JOIN JEN1100 D ON (A.JEN_ID = D.JEN_ID AND A.JOB_ID = D.JOB_ID)
+		WHERE 1=1
+			AND A.JEN_ID = #jenId#
+			AND A.JOB_ID = #jobId#
+	</select>
+	
+	<!-- JOB 빌드 이력 단건 조회-->
+	<select id="jen1000DAO.selectJen1200JobBuildInfo" parameterClass="java.util.Map" resultMap="resultMapSelectJen1200">
+		/* jen1000DAO.selectJen1200JobBuildInfo - JOB 빌드 이력 단건 조회  */
+		SELECT
+			A.JEN_ID
+			, C.JEN_NM
+			, C.JEN_URL
+			, C.JEN_USR_ID
+			, C.JEN_USR_TOK
+			, C.JEN_DESC
+			, A.JOB_ID
+			, D.JOB_TYPE_CD
+			, SF_CMM1001_COM_CD_INFO('DPL00002', D.JOB_TYPE_CD, '1') AS JOB_TYPE_NM
+			, D.JOB_URL
+			, D.JOB_TRIGGER_CD
+			, D.JOB_DESC
+			, A.CI_ID
+			, A.TICKET_ID
+			, A.DPL_ID
+			, A.BLD_NUM
+			, A.BLD_CLASS
+			, A.BLD_RESULT
+			, A.BLD_RESULT_CD
+			, A.BLD_ETM_DURATION_TM
+			, A.BLD_DURATION_TM
+			, A.BLD_START_DTM
+			, A.BLD_CONSOLE_LOG
+			, A.BLD_CAUSES
+			, A.BLD_ACTION_LOG
+			, (SELECT COUNT(*) FROM JEN1203 WHERE JEN_ID = A.JEN_ID AND JOB_ID = A.JOB_ID AND BLD_NUM = A.BLD_NUM) AS BLD_PARAM_CNT
+		FROM JEN1200 A
+		INNER JOIN JEN1000 C ON (A.JEN_ID = C.JEN_ID)
+		INNER JOIN JEN1100 D ON (A.JEN_ID = D.JEN_ID AND A.JOB_ID = D.JOB_ID)
+		WHERE 1=1
+			AND A.JEN_ID = #jenId#
+			AND A.JOB_ID = #jobId#
+			AND A.BLD_NUM = #bldNum#
+	</select>
+	
+	<!-- JOB 마지막 빌드 변경 정보 조회-->
+	<select id="jen1000DAO.selectJen1201JobLastBuildChgList" parameterClass="java.util.Map" resultClass="egovMap">
+		/* jen1000DAO.selectJen1201JobLastBuildChgList - JOB 마지막 빌드 변경 정보 조회  */
+		SELECT
+			A.JEN_ID
+			, A.JOB_ID
+			, A.BLD_NUM
+			, A.CHG_REVISION
+			, A.CHG_TIMESTAMP
+			, A.CHG_DATE
+			, A.CHG_MSG
+			, A.CHG_USER
+		FROM JEN1201 A
+		WHERE 1=1
+			AND A.JEN_ID = #jenId#
+			AND A.JOB_ID = #jobId#
+			AND A.BLD_NUM = #bldNum#
+	</select>
+	
+	<!-- JOB 마지막 빌드 변경 파일 정보 조회-->
+	<select id="jen1000DAO.selectJen1202JobLastBuildFileChgList" parameterClass="java.util.Map" resultClass="egovMap">
+		/* jen1000DAO.selectJen1202JobLastBuildFileChgList - JOB 마지막 빌드 변경 파일 정보 조회  */
+		SELECT
+			A.JEN_ID
+			, A.JOB_ID
+			, A.BLD_NUM
+			, A.CHG_REVISION
+			, A.FILE_PATH
+			, A.EDIT_TYPE_CD
+		FROM JEN1202 A
+		WHERE 1=1
+			AND A.JEN_ID = #jenId#
+			AND A.JOB_ID = #jobId#
+			AND A.BLD_NUM = #bldNum#
+	</select>
+	
+	<!-- JOB 빌드 이력 등록 -->
+	<insert id="jen1000DAO.insertJen1200DeployJobBuildLogInfo" parameterClass="BuildVO">
+		<![CDATA[ 
+			/* jen1000DAO.insertJen1200DeployJobBuildLogInfo -JOB 빌드 이력 등록   */
+			INSERT INTO JEN1200
+			(
+				JEN_ID					,JOB_ID						,BLD_NUM				,BLD_CLASS
+				,BLD_RESULT				,BLD_RESULT_CD				,BLD_ETM_DURATION_TM
+				,BLD_DURATION_TM		,BLD_START_DTM				,BLD_CONSOLE_LOG		,BLD_CAUSES
+				,CI_ID					,TICKET_ID					,DPL_ID					,BLD_ACTION_LOG
+				,REG_DTM				,REG_USR_ID					,REG_USR_IP
+					    
+			)
+			VALUES
+			(
+				#jenId#					,#jobId#					,#bldNum#				,#bldClass#
+				,#bldResult#			,#bldResultCd#				,#bldEtmDurationTm#
+				,#bldDurationTm#		,#bldStartDtm#				,#bldConsoleLog#		,#bldCauses#
+				,#ciId#					,#ticketId#					,#dplId#				,#bldActionLog#
+				,SYSDATE				,#regUsrId#					,#regUsrIp#
+			)
+		]]>
+	</insert>
+	
+	<!-- JOB 빌드 이력 수정 -->
+	<update id="jen1000DAO.updateJen1200DeployJobBuildLogInfo" parameterClass="BuildVO" >
+		/* jen1000DAO.updateJen1200DeployJobBuildLogInfo - JOB 빌드 이력 수정  */
+		UPDATE JEN1200 A
+		SET
+			A.MODIFY_DTM = SYSDATE
+			<isNotEmpty property="bldClass">
+				, BLD_CLASS = #bldClass#
+			</isNotEmpty>
+			<isNotEmpty property="bldResult">
+				, BLD_RESULT = #bldResult#
+			</isNotEmpty>
+			<isNotEmpty property="bldResultCd">
+				, BLD_RESULT_CD = #bldResultCd#
+			</isNotEmpty>
+			<isNotEmpty property="bldEtmDurationTm">
+				, BLD_ETM_DURATION_TM = #bldEtmDurationTm#
+			</isNotEmpty>
+			<isNotEmpty property="bldDurationTm">
+				, BLD_DURATION_TM = #bldDurationTm#
+			</isNotEmpty>
+			<isNotEmpty property="bldStartDtm">
+				, BLD_START_DTM = #bldStartDtm#
+			</isNotEmpty>
+			<isNotEmpty property="bldConsoleLog">
+				, BLD_CONSOLE_LOG = #bldConsoleLog#
+			</isNotEmpty>
+			<isNotEmpty property="bldCauses">
+				, BLD_CAUSES = #bldCauses#
+			</isNotEmpty>
+			<isNotEmpty property="ciId">
+				, CI_ID = #ciId#
+			</isNotEmpty>
+			<isNotEmpty property="ticketId">
+				, TICKET_ID = #ticketId#
+			</isNotEmpty>
+			<isNotEmpty property="dplId">
+				, DPL_ID = #dplId#
+			</isNotEmpty>
+			<isNotEmpty property="bldActionLog">
+				, BLD_ACTION_LOG = #bldActionLog#
+			</isNotEmpty>
+       	WHERE	1=1
+       	AND A.JEN_ID = #jenId#
+        AND A.JOB_ID = #jobId#
+       	AND A.BLD_NUM = #bldNum#
+	</update>
+	
+	<!-- JOB 빌드 이력 제거 -->
+	<delete id="jen1000DAO.deleteJen1200DeployJobBuildLogList" parameterClass="java.util.Map" >
+		/* jen1000DAO.deleteJen1200DeployJobBuildLogList - JOB 빌드 이력 제거  */
+		DELETE FROM JEN1200
+       	WHERE	1=1
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</delete>
+	
+	<!-- JOB 빌드 변경 정보 제거 -->
+	<delete id="jen1000DAO.deleteJen1201DeployJobBuildChgLogList" parameterClass="java.util.Map" >
+		/* jen1000DAO.deleteJen1201DeployJobBuildChgLogList - JOB 빌드 변경 정보 제거  */
+		DELETE FROM JEN1201
+       	WHERE	1=1
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</delete>
+	
+	<!-- JOB 빌드 변경 파일 정보 제거 -->
+	<delete id="jen1000DAO.deleteJen1202DeployJobBuildFileChgLogList" parameterClass="java.util.Map" >
+		/* jen1000DAO.deleteJen1202DeployJobBuildFileChgLogList - JOB 빌드 변경 파일 정보 제거  */
+		DELETE FROM JEN1202
+       	WHERE	1=1
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</delete>
+	
+	<!-- JOB 빌드 파라미터 정보 제거 -->
+	<delete id="jen1000DAO.deleteJen1203DeployJobBuildParamList" parameterClass="java.util.Map" >
+		/* jen1000DAO.deleteJen1203DeployJobBuildParamList - JOB 빌드 파라미터 정보 제거  */
+		DELETE FROM JEN1203
+       	WHERE	1=1
+       	AND		JEN_ID = #jenId#
+       	AND		JOB_ID = #jobId#
+	</delete>
 </sqlMap>

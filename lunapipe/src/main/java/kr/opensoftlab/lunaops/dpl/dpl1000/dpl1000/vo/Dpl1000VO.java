@@ -6,6 +6,8 @@ public class Dpl1000VO extends PageVO{
 	private String rn;
 	
 	
+	private String ciId;
+	private String ticketId;
 	private String dplId;		
 	private String dplNm; 		
 	private String dplVer;  		
@@ -23,21 +25,26 @@ public class Dpl1000VO extends PageVO{
 	private String dplStDtm;
 	private String dplRestoreCd;  	
 	private String dplRestoreNm;
-	private String signId;
-	private String signStsCd;  	
-	private String signStsNm;
-	private String signUsrId;
-	private String signUsrNm;
-	private String signUsrImg;
-	private String signDtm;
-	private String dplSignTxt;
-	private String signTxt;
-	private String signRejectTxt;
-	private String dplRevisionNum;
   	
 	private String bldSts;
 
 	
+	public String getCiId() {
+		return ciId;
+	}
+
+	public void setCiId(String ciId) {
+		this.ciId = ciId;
+	}
+
+	public String getTicketId() {
+		return ticketId;
+	}
+
+	public void setTicketId(String ticketId) {
+		this.ticketId = ticketId;
+	}
+
 	public String getRn() {
 		return rn;
 	}
@@ -188,95 +195,6 @@ public class Dpl1000VO extends PageVO{
 
 	public void setBldSts(String bldSts) {
 		this.bldSts = bldSts;
-	}
-
-	public String getSignStsCd() {
-		return signStsCd;
-	}
-
-	public void setSignStsCd(String signStsCd) {
-		this.signStsCd = signStsCd;
-	}
-
-	public String getSignStsNm() {
-		return signStsNm;
-	}
-
-	public void setSignStsNm(String signStsNm) {
-		this.signStsNm = signStsNm;
-	}
-
-	public String getSignUsrId() {
-		return signUsrId;
-	}
-
-	public void setSignUsrId(String signUsrId) {
-		this.signUsrId = signUsrId;
-	}
-
-	public String getSignUsrNm() {
-		return signUsrNm;
-	}
-
-	public void setSignUsrNm(String signUsrNm) {
-		this.signUsrNm = signUsrNm;
-	}
-
-	public String getSignUsrImg() {
-		return signUsrImg;
-	}
-
-	public void setSignUsrImg(String signUsrImg) {
-		this.signUsrImg = signUsrImg;
-	}
-
-	public String getSignDtm() {
-		return signDtm;
-	}
-
-	public void setSignDtm(String signDtm) {
-		this.signDtm = signDtm;
-	}
-
-
-	public String getDplSignTxt() {
-		return dplSignTxt;
-	}
-
-	public void setDplSignTxt(String dplSignTxt) {
-		this.dplSignTxt = dplSignTxt;
-	}
-
-	public String getSignTxt() {
-		return signTxt;
-	}
-
-	public void setSignTxt(String signTxt) {
-		this.signTxt = signTxt;
-	}
-
-	public String getSignRejectTxt() {
-		return signRejectTxt;
-	}
-
-	public void setSignRejectTxt(String signRejectTxt) {
-		this.signRejectTxt = signRejectTxt;
-	}
-
-	public String getSignId() {
-		return signId;
-	}
-
-	public void setSignId(String signId) {
-		this.signId = signId;
-	}
-
-	public String getDplRevisionNum() {
-		return dplRevisionNum;
-	}
-
-	public void setDplRevisionNum(String dplRevisionNum) {
-		this.dplRevisionNum = dplRevisionNum;
 	}
 
 }

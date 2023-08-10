@@ -20,13 +20,11 @@ public class Log1000VO extends PageVO {
 	private String logIp;
 	private String logTime;
 	private String logUrl;
-	private String menuId;
-	private String menuNm;
-	private String menuUrl;
-	private String menuCd;
-	
-	
-	
+	private String logType;
+	private String logAjaxCd;
+	private String logParamData1;
+	private String logParamData2;
+	private String logParamData3;
 	
 	public String getLogUrl() {
 		return logUrl;
@@ -106,42 +104,36 @@ public class Log1000VO extends PageVO {
 	public void setLogTime(String logTime) {
 		this.logTime = logTime;
 	}
-	public String getMenuId() {
-		return menuId;
+	public String getLogType() {
+		return logType;
 	}
-	public void setMenuId(String menuId) {
-		this.menuId = menuId;
+	public void setLogType(String logType) {
+		this.logType = logType;
 	}
-	public String getMenuNm() {
-		return menuNm;
+	public String getLogAjaxCd() {
+		return logAjaxCd;
 	}
-	public void setMenuNm(String menuNm) {
-		this.menuNm = menuNm;
+	public void setLogAjaxCd(String logAjaxCd) {
+		this.logAjaxCd = logAjaxCd;
 	}
-	public String getMenuUrl() {
-		return menuUrl;
+	public String getLogParamData1() {
+		return logParamData1;
 	}
-	public void setMenuUrl(String menuUrl) {
-		this.menuUrl = menuUrl;
+	public void setLogParamData1(String logParamData1) {
+		this.logParamData1 = logParamData1;
 	}
-	public String getMenuCd() {
-		return menuCd;
+	public String getLogParamData2() {
+		return logParamData2;
 	}
-	public void setMenuCd(String menuCd) {
-		this.menuCd = menuCd;
+	public void setLogParamData2(String logParamData2) {
+		this.logParamData2 = logParamData2;
 	}
-	
-	
+	public String getLogParamData3() {
+		return logParamData3;
+	}
+	public void setLogParamData3(String logParamData3) {
+		this.logParamData3 = logParamData3;
+	}
 
-	
-
-
-	
-	
-	
-	
-	
-	
-	
 	
 }

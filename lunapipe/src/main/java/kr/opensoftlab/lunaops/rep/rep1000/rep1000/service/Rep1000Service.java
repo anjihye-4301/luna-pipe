@@ -29,4 +29,17 @@ public interface Rep1000Service {
 
 	
 	void deleteRep1000Info(Map<String, String> paramMap) throws Exception;
+	
+	
+	int deleteRep1000List(Map<String, Object> paramMap) throws Exception;
+	
+	
+	@SuppressWarnings({"rawtypes" })
+	List<Map> selectRep1001CIRepList(Map paramMap) throws Exception;
+	
+	
+	void deleteRep1001CIRepInfo(Map<String, String> paramMap) throws Exception;
+	
+	
+	String insertRep1001CIRepInfo(Map<String, String> paramMap) throws Exception;
 }

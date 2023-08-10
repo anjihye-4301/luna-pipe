@@ -1,163 +1,120 @@
-/**
- * GLOBALS_GRID_DTM_SEARCH
- * - 그리드 페이지에서 기간 검색 기본 값 (단위: 월)
- */
-var GLOBALS_GRID_DTM_SEARCH = {
-		"req1000"	:1				
-		,"req2000"	:2				
-		,"req4100"	:3				
-		,"req4500"	:4				
-		,"req4600"	:5				
-		,"stm2002"	:6				
-		,"stm2005"	:7				
-		,"default"	:6				
-}
-
-
-
-
 
 function gfnCommonSetting(searchObj,cmmCode,showSearchKey,hideSearchKey){
 	
-
-	var mstCdStrArr = cmmCode;
-	var strUseYn = 'Y';
-	var arrObj = [axdom("#" + searchObj.getItemId(showSearchKey))];
-	var arrComboType = ["OS"];
+	
+	var commonCodeArr = [
+		{mstCd: cmmCode, useYn: "Y",targetObj: "#" + searchObj.getItemId(showSearchKey), comboType:"OS"} 
+	];
 	
 	
 	axdom("#" + searchObj.getItemId(showSearchKey)).html('');
 	
 	
-	gfnGetMultiCommonCodeDataForm(mstCdStrArr, strUseYn, arrObj, arrComboType , false);
+	gfnGetMultiCommonCodeDataForm(commonCodeArr , false);
 	
 	axdom("#" + searchObj.getItemId(showSearchKey)).show();
 	axdom("#" + searchObj.getItemId(hideSearchKey)).hide();
 }
 
-function gfnGetMultiCommonCodeDataForm(mstCdStr, useYn, arrObj, arrComboType , isAsyncMode){
-	
-	
-	var mstCdArr = mstCdStr.split("|"); 
-	var mstCds = "";
-	for(var i = 0 ; i < mstCdArr.length ; i++){
-		mstCds += "'" + mstCdArr[i] + "'," ;	
-	}
-	mstCds = mstCds.substring(0,mstCds.length-1);
+
+function gfnGetMultiCommonCodeDataForm(commonCodeArr , isAsyncMode){
 	
 	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm9000/cmm9100/selectCmm9100MultiCommonCodeList.do"
-				,"async":isAsyncMode, loadingShow: false}
-			,{ "mstCds":mstCds, "useYn":useYn, "mstCdStr":mstCdStr });
+			{"url":"/cmm/cmm1000/cmm1000/selectCmm1000MultiCommonCodeList.do"
+				,"async":isAsyncMode,"loadingShow":false}
+			,{commonCodeArr: JSON.stringify(commonCodeArr)});
 	
 	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-
     	if(data.ERROR_CODE == '-1'){
-    		jAlert(data.ERROR_MSG,'알림창');
+    		toast.push(data.ERROR_MSG);
 			return;
 		}
-
     	
-		var len = mstCdArr.length;
-		
-		for(var i = 0 ; i < len ; i++){
-			
-			var codeArr;
-			var textArr;
-			var strCodeData = eval("data.mstCd" + mstCdArr[i] + "code");
-			var strTextData = eval("data.mstCd" + mstCdArr[i] + "text");
-			
-			
-			if(arrComboType[i] == 'A'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				
-				arrObj[i].append("<option value='A'>전 체</option>");
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + gfnEscapeHtml(textArr[j]) + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'N'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-				
-				
-				arrObj[i].append("<option value=''>전 체</option>");
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + gfnEscapeHtml(textArr[j]) + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'S'){
-				
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				
-				arrObj[i].append("<option value=''>선 택</option>");
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + gfnEscapeHtml(textArr[j]) + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'E'){
-				
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-				
-				
-				arrObj[i].append("<option value=''></option>");
-				
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + gfnEscapeHtml(textArr[j]) + "</option>");
-				}
-				
-			}
-			else if(arrComboType[i] == 'JSON'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].innerHTML = gfnEscapeHtml(textArr[j]);
-				}
-			}
-			else{
-				
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + gfnEscapeHtml(textArr[j]) + "</option>");
-				}
-			}
-			
-			
-			if(arrComboType[i] == 'OS'){
-					$.each(arrObj[i],function(idx,map){
-						if(!gfnIsNull($(map).attr('OS'))){
-							var seledObj = $(map).children('option[value='+$(map).attr('OS')+']');
-							if(!gfnIsNull(seledObj)){
-								$(seledObj).attr('selected','selected');
-							}
-						}
-					});
-			}
-		}
-		
     	
-		
+    	var commonCodeList = data.commonCodeList;
+    	
+    	
+    	$.each(commonCodeArr ,function(idx, map){
+    		
+    		var subList = commonCodeList[map.targetObj];
+    		
+    		
+    		var comboType = map.comboType;
+    		
+    		
+    		var $targetObject = $(map.targetObj);
+    		
+    		
+    		$targetObject.empty();
+    		
+    		
+    		if($targetObject == null || gfnIsNull(subList)){
+    			return true;
+    		}
+    		
+    		if(comboType == 'A'){
+				
+    			$targetObject.append("<option value='A'>전체</option>");
+			}
+    		else if(comboType == 'N'){
+    			
+    			$targetObject.append("<option value=''>전체</option>");
+			}
+    		else if(comboType == 'S'){
+    			
+    			$targetObject.append("<option value=''>선택</option>");
+			}
+    		else if(comboType == 'E'){
+    			
+    			$targetObject.append("<option value=''></option>");
+			}
+			
+    		
+    		$.each(subList, function(idx2, subMap){
+    			
+    			
+    			if(!gfnIsNull(commonCodeArr[0].subCdRef1)){
+    				
+    				if(!gfnIsNull(commonCodeArr[0].subCdRef2)){
+    					
+    					if(!gfnIsNull(commonCodeArr[0].subCdRef3)){
+    						
+    						if(commonCodeArr[0].subCdRef1 == subMap.subCdRef1 && commonCodeArr[0].subCdRef2 == subMap.subCdRef2 && commonCodeArr[0].subCdRef3 == subMap.subCdRef3){
+	    						$targetObject.append("<option value='" + subMap.subCd + "' data-sub-cd-ref1='"+subMap.subCdRef1+"' data-sub-cd-ref2='"+subMap.subCdRef2+"' data-sub-cd-ref3='"+subMap.subCdRef3+"'>" + subMap.subCdNm + "</option>");
+	    					}
+    					
+    					}else{
+    						if(commonCodeArr[0].subCdRef1 == subMap.subCdRef1 && commonCodeArr[0].subCdRef2 == subMap.subCdRef2){
+	    						$targetObject.append("<option value='" + subMap.subCd + "' data-sub-cd-ref1='"+subMap.subCdRef1+"' data-sub-cd-ref2='"+subMap.subCdRef2+"' data-sub-cd-ref3='"+subMap.subCdRef3+"'>" + subMap.subCdNm + "</option>");
+	    					}
+    					}
+    				
+    				}else{
+    					if(commonCodeArr[0].subCdRef1 == subMap.subCdRef1){
+    						$targetObject.append("<option value='" + subMap.subCd + "' data-sub-cd-ref1='"+subMap.subCdRef1+"' data-sub-cd-ref2='"+subMap.subCdRef2+"' data-sub-cd-ref3='"+subMap.subCdRef3+"'>" + subMap.subCdNm + "</option>");
+    					}
+    				}
+    			
+    			} else {
+    				$targetObject.append("<option value='" + subMap.subCd + "' data-sub-cd-ref1='"+subMap.subCdRef1+"' data-sub-cd-ref2='"+subMap.subCdRef2+"' data-sub-cd-ref3='"+subMap.subCdRef3+"'>" + subMap.subCdNm + "</option>");
+    			}
+    		});
+    		
+    		
+			var selVal = $targetObject.data("osl-value");
+			
+			if(!gfnIsNull(selVal)){
+				var $seledObj = $targetObject.children('option[value='+selVal+']');
+				
+				if($seledObj.length > 0){
+					$seledObj.attr('selected','selected');
+				}
+			}
+    	});
 	});
 	
 	
-	ajaxObj.setFnError(function(xhr, status, err){
-			
-		jAlert(xhr.statusText);;
-	});
-	
-	ajaxObj.send();
+	return ajaxObj.send();
 }
 
 
@@ -278,9 +235,9 @@ function gfnAjaxRequestAction(property,data){
 	        success: function(data, status, xhr) {
 	        	
 	        	var responeAjaxTime =  new Date().getTime()-startAjaxTime;
-	        	
+	        	obj.fnSuccess(data, status, xhr, responeAjaxTime);
 	        	try{
-	        		obj.fnSuccess(data, status, xhr, responeAjaxTime);
+	        		
 	        	}catch(e){
 	        		console.log("success error: ");
 	        		console.log(e);
@@ -288,16 +245,8 @@ function gfnAjaxRequestAction(property,data){
 	        	}
 	        },
 	        error: function(xhr, status, err){
-	        	
-	        	if(xhr.status == '999'){
-	        		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-	        		document.location.href="/cmm/cmm4000/cmm4000/selectCmm4000View.do"
-	        		return;
-	        	}else{
-	        		
-	        		obj.fnError(xhr, status, err);
-	        	}
-	        	
+        		
+        		obj.fnError(xhr, status, err);
 	        	return;
 	        },
 	        complete: function(){
@@ -311,94 +260,6 @@ function gfnAjaxRequestAction(property,data){
 	}
 }
 
-
-function gfnGetUsrDataForm(useCd, arrObj, arrComboType , isAsyncMode){
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm9000/cmm9200/selectCmm9200PrjUsrList.do"
-				,"async":isAsyncMode}
-			,{ "useCd":useCd });
-	
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-    	
-    	if(data.ERROR_CODE == '-1'){
-    		jAlert(data.ERROR_MSG, '알림창');
-			return;
-		}
-    	
-    	
-		var len = arrObj.length;
-		
-		for(var i = 0 ; i < len ; i++){
-			var codeArr;
-			var textArr;
-			var strCodeData = data.usrIdcode;
-			var strTextData = data.usrNmtext;
-			
-			if(arrComboType[i] == 'A'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				
-				arrObj[i].append("<option value='A'>전 체</option>");
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + textArr[j] + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'N'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-				
-				
-				arrObj[i].append("<option value=''>전 체</option>");
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + textArr[j] + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'S'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				
-				arrObj[i].append("<option value=''>선 택</option>");
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + textArr[j] + "</option>");
-				}
-			}
-			else if(arrComboType[i] == 'E'){
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-
-				
-				arrObj[i].append("<option value=''></option>");
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + textArr[j] + "</option>");
-				}
-			}
-			else{
-				
-				codeArr = strCodeData.split('|');
-				textArr = strTextData.split('|');
-				
-				for(var j = 0 ; j < codeArr.length; j++){
-					arrObj[i].append("<option value='" + codeArr[j] + "'>" + textArr[j] + "</option>");
-				}
-			}
-		}
-	});
-	
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-			
-		jAlert(xhr.statusText);
-	});
-	
-	ajaxObj.send();
-}
 
 
 function gfnRequireCheck(formId, checkObjArr, checkObjNmArr){
@@ -456,34 +317,6 @@ function gfnRequireCheck(formId, checkObjArr, checkObjNmArr){
 }
 
 
-function gfnFormAllObjReset(form){
-	var list = document.getElementById(form).elements;
-	var listCnt = document.getElementById(form).elements.length;
-	var inputType;
-	
-	for(var i = 0 ; i < listCnt ; i++ ){
-		inputType = list[i].type.substring(0,3);
-		
-		switch (inputType){
-			case "sel" :
-				
-				list[i].selectedIndex = 0;
-				break;
-			case "che" :
-				
-				$(list[i]).prop("checked", false);
-				break;
-			case "rad" :
-				
-				break;
-			default :
-				$(list[i]).val("");
-				break;
-		}
-		
-	}
-}
-
 
 function gfnSetFormAllObjTabIndex(form){
 	var list = document.getElementById(form).elements;
@@ -512,112 +345,6 @@ function gfnSetFormAllObjTabIndex(form){
 }
 
 
-function gfnSetDetailObj(jsonObj, objId, pk, pkKey){
-	if(jsonObj == undefined){
-		
-		var keyArr = new Array();
-		
-		
-		for(var key in jsonObj){
-			toast.push(key);
-			keyArr.push(key);
-		}
-		
-		for(var i = 0; i < keyArr.length; i++){
-			var key = keyArr[i];
-			var val = gfnReplace(eval("jsonObj." + key), null, '');
-			
-			$("#" + objId + " #" + key).text(val);
-			$("#" + objId + " #" + key).val(val);
-		}
-	}
-	else{
-		
-		$.each(jsonObj, function(idx, map){
-			if(pk == eval("map." + pkKey)){
-				
-				var keyArr = new Array();
-	
-				
-				for(var key in map){
-					keyArr.push(key);
-				}
-				
-				for(var i = 0; i < keyArr.length; i++){
-					var key = keyArr[i];
-					var val = gfnReplace(eval("map." + key), null, '');
-					
-					$("#" + objId + " #" + key).text(val);
-					$("#" + objId + " #" + key).val(val);
-				}
-			}
-		});
-	}
-}
-
-
-function gfnSetData2Form(jsonObj, frmId){
-
-	var frmChilds = document.getElementById(frmId).elements;
-	var child = null;
-	var strType = null;
-	var strValue = "";
-	var frmChild = null;
-	
-	$.each(jsonObj, function(key, val){
-		
-		try{
-			
-			child = $("#" + frmId + " #" + key);
-			strType = $("#" + frmId + " #" + key).attr("type");
-	    
-	        
-	        if (typeof strType == "undefined" && child.length > 0) {
-	            strType = child[0].type;
-	        }
-	    
-	        
-	        switch(strType) {
-	            case undefined:
-	            case "button":
-	            case "reset":
-	            case "submit":
-	                break;
-	            case "select-one":
-	            	
-	            	if(gfnIsNull(val)){
-	            		$(child).children("option:eq(0)").attr("selected","selected");
-	            	}else{
-	            		$(child).val(val);
-	            	}
-	                break;
-	            case "radio":
-	                for (idx = 0, max = child.length; idx < max; idx++) {
-	                    if (child[idx].value == val) {
-	                        child[idx].checked=true;
-	                        break;
-	                    }
-	                }
-	                break;
-	            case "checkbox":
-	                child.checked = (val == 1);
-	                break;
-	            case "textarea":
-		            	
-	            		$(child).val(val.replace(/(<\/br>|<br>|<br\/>|<br \/>)/gi, '\r\n'));
-		            	break;
-	            default :
-	                $(child).val(val);
-	                break;
-	        }
-	        
-	        
-		}catch(e){
-			
-			return;
-		}
-	});
-}
 
 
 function gfnSetData2ParentObj(jsonObj, parentObjId){
@@ -673,128 +400,11 @@ function gfnSetData2ParentObj(jsonObj, parentObjId){
 		                break;
 		        }
 	        }
-			
-			
-			
-			
 		}
 		catch(e){
 			
 		}
 	});
-}
-
-
-function gfnSetData2CommentsArea(mapList, parentId, mode){
-	
-	if(gfnIsNull(mapList)){
-		return false;
-	}
-	
-	
-	if(mode == 'BRD'){
-		$("#" + parentId).children().remove();
-		
-		var cmntAllCnt = 0;
-		$.each(mapList, function(idx, map){
-			cmntAllCnt = map.cmntAllCnt;
-		});
-		if(!gfnIsNull($('#cmntAllCnt'))){
-			$('#cmntAllCnt').html('('+cmntAllCnt+'개)');
-		}
-		
-		
-		$.each(mapList, function(idx, map){
-			
-			
-			var agoTime = gfnDtmAgoStr(new Date(map.regDtm).getTime());
-			
-			var reqCmnt = map.reqCmnt
-			
-			reqCmnt = reqCmnt.replace(/<script/g,"&lt;script");
-			var subRCD = $("<div class='subRCD'>"+reqCmnt+"</div>"); 
-			
-			
-			var cmntNonHtml = map.reqCmnt.replace(/(<([^>]+)>)/ig,"");
-			
-			$("#" + parentId).append(
-				"<div onclick='fnRecentCmnt(this);' class='reqChangeDiv recentCmnt' reqId='"+map.reqId+"' title='"+cmntNonHtml+"'>"
-					+subRCD[0].outerHTML
-					+"<div class='subRCD'>"
-						+map.regUsrNm+" - "
-						+ agoTime
-					+"</div>"
-				+"</div>"
-			);
-		});
-	}
-	
-	else{
-		$("#" + parentId).children().remove();
-		
-		$.each(mapList, function(idx, map){
-			$("#" + parentId).append(
-										"<div class='comment_list'>"
-									+		" <span class='comment_user'>" + map.regUsrNm + "</span>"
-									+		" <span class='comment_date'>" + map.regDtm + "</span>"
-									+		" <pre class='comment_contents'>" + map.reqCmnt + "</pre>"
-									+	"</div>"
-			);
-		});
-	}
-}
-
-
-function gfnSetData2ChgHistsArea(mapList, parentId, mode){
-
-	if(mode == 'BRD'){
-		$("#" + parentId).children().remove();
-		
-		var chgHistAllCnt = 0;
-		$.each(mapList, function(idx, map){
-			chgHistAllCnt = map.chgHistAllCnt;
-		});
-		
-		$("#" + parentId).append("<div class='b_title' id='chgHistAllCnt'>요구사항 이력(" + chgHistAllCnt + "개)</div>");
-		
-		$.each(mapList, function(idx, map){
-			var msg = "";
-			if(map.chgGbCd == '01'){
-				msg = map.preSprintNm + " => " + map.chgSprintNm;
-			}
-			else if(map.chgGbCd == '02'){
-				msg = map.preFlowNm + " => " + map.chgFlowNm;
-			}
-			else{
-				msg = map.preEtcNm + " => " + map.chgEtcNm;
-			}
-			
-			$("#" + parentId).append(
-										"<div class='b_sub'>"
-									+		"<span class='b_user'>" + map.reqChgUsrNm + "</span>"
-									+		"<img src='/images/contents/bar.png' alt='' class='bar_img' />"
-									+		"<span class='b_one'>" + map.chgGbNm + "</span>"
-									+		"<img src='/images/contents/bar.png' alt='' class='bar_img' />"
-									+		"<span class='b_two'>" + msg + "</span>"
-									+		"<img src='/images/contents/bar.png' alt='' class='bar_img' />"
-									+		"<span class='b_date'>" + map.reqChgDtm + "</span>"
-									+	"</div>"
-			);
-		});
-	}
-	else{
-		$("#" + parentId).children().remove();
-		
-		$.each(mapList, function(idx, map){
-			$("#" + parentId).append(
-										"<div class='comment_list'>"
-									+		" <span class='comment_user'>" + map.regUsrNm + "</span>"
-									+		" <span class='comment_date'>" + map.regDtm + "</span>"
-									+		" <pre class='comment_contents'>" + map.reqCmnt + "</pre>"
-									+	"</div>"
-			);
-		});
-	}
 }
 
 
@@ -1169,16 +779,6 @@ function gfnReplace( sOrg, sRepFrom, sRepTo )
 	return sRet;
 }
 
-
-function gfnPos(sOrg, sFind, nStart)
-{
-	if( gfnIsNull(sOrg) || gfnIsNull(sFind) )	return -1;
-	if( gfnIsNull(nStart) )	nStart = 0;
-
-	return sOrg.indexOf(sFind, nStart);
-}
-
-
 function gfnStr(sText){
 	if(sText == undefined) return "";
 	if(sText == null) return "";
@@ -1186,7 +786,6 @@ function gfnStr(sText){
 
 	return ""+sText;
 }
-
 
 String.prototype.format = function (args) {
 	var str = this;
@@ -1251,169 +850,6 @@ function gfnLoadProgressBar(pgBarObj){
 }
 
 
-function gfnFileListDiv(fileVo,divId){
-	
-	var size = gfnByteCalculation(fileVo.fileMg);
-    var fnStr = "gfnFileDownload(this,false,'"+fileVo.fileExtsn+"', event)";
-    
-    
-	var divTemp = $(
-			"<div class='fileDivBoth'>"
-			+"<div onclick="+fnStr+" class='fileInfo' atchId='"
-			+fileVo.atchFileId
-			+"' fileSn='"
-			+fileVo.fileSn
-			+"'>"
-			+fileVo.orignlFileNm
-			+" ("+size+")"
-			+"</div><div onclick='gfnFileDelete(this, event);' class='fileDel'  atchId='"
-			+fileVo.atchFileId
-			+"' fileSn='"
-			+fileVo.fileSn
-			+"'>X</div>"
-			+"</div>");
-	$(divTemp).appendTo(divId);
-}
-
-
-function gfnFileListReadDiv(fileVo,divId,type,delChk){
-	
-	var fileExtsnImg = gfnFileExtImages(fileVo.fileExtsn);
-	
-	var size = gfnByteCalculation(fileVo.fileMg);
-
-	
-	var delChkClass = " delNone";
-	var delEventStr = "";
-	var delStr = "";
-	
-	
-	if(gfnIsNull(delChk)){
-		delChk = true;
-	}
-
-	
-	if(typeof btnAuthDeleteYn != "undefined" && btnAuthDeleteYn == "Y" && type != "req4104" && delChk){
-		delChkClass = "";
-		var scriptStr = "gfnFileDelete($(this).siblings(\".file_contents\"), event)";
-		delEventStr = " onclick='"+scriptStr+"'";
-		delStr = '<div id="btn_delete_file" class="file_btn file_delete'+delChkClass+'"'+delStr+delEventStr+' atchId="'+fileVo.atchFileId+'">삭제</div>';
-	}
-	
-	
-	var scriptStr = "gfnFileDownload($(this),true)";
-	downStr = " onclick='"+scriptStr+"'";
-
-	
-	var defaultStrLength = 30;
-	
-	
-	if($(document).width() <= 1500){
-		defaultStrLength = 20;
-	}
-	
-	var creatDt_str = "";
-	var creatDt = "";
-	
-	
-	var fileCreatDt = fileVo.creatDt;
-	if(!gfnIsNull(fileCreatDt)){
-		fileCreatDt = fileCreatDt.replace(/-/g,"/");
-		fileCreatDt = fileCreatDt.substring(0,fileCreatDt.indexOf("."));
-	}
-	
-	
-	if(typeof fileCreatDt == "undefined"){
-		creatDt = new Date().format('yyyy-MM-dd HH:mm:ss');
-	}else{
-		creatDt = new Date(fileCreatDt).format('yyyy-MM-dd HH:mm:ss');
-	}
-	
-	if(!gfnIsNull(type)){
-		if(type == "doc"){
-			defaultStrLength = 50;
-			creatDt_str = "<span style='font-size:0.9em;'> - ("+creatDt+")</span>";
-		}else if(type == "req" || type == "req4104"){
-			defaultStrLength = 30;
-		}else if(type == "more"){
-			defaultStrLength = 16;
-		}else if(type == "bad"){
-			defaultStrLength = 30;
-		}else if(type == "dpl"){
-			defaultStrLength = 35;
-		}else if(type == "req_popup"){
-			defaultStrLength = 50;
-		}else if(type == "newReq"){ 
-			defaultStrLength = 50;
-			delStr = "";
-		}
-	}
-	
-	
-	
-	var deleteType = "normal";
-	
-	if(type == "req" || type == "req_popup"){
-		deleteType = "request";
-	}
-	
-	
-	var fileTitle = fileVo.orignlFileNm+" - ("+creatDt+")";
-
-	
-	var divTemp = $('<div class="file_frame_box">'
-						+'<div class="file_main_box">'
-							+'<div class="file_contents" prjId="'+fileVo.prjId+'" reqId="'+fileVo.reqId+'" deleteType="'+deleteType+'"'
-							+' orgFileNm="'+fileVo.orignlFileNm+'"'
-							+' atchId="'+fileVo.atchFileId+'" fileSn="'+fileVo.fileSn+'"'+downStr+' title="'+fileTitle+'">'+
-							fileExtsnImg
-							+gfnCutStrLen(fileVo.orignlFileNm, defaultStrLength)
-							+'('+size+')'
-							+creatDt_str
-							+'</div>'
-							+delStr
-						+'</div>'
-						+'<div class="file_progressBar"><div></div></div></div>');
-	$(divTemp).appendTo(divId);
-	
-	
-	return $(divTemp);
-}
-
-
-
-
-
-
-function gfnFileExtImages(fileExtsn){
-	var extArrayGif = ["aif","aifc","aiff","app","arj","asf","asx","au","avi","bat","bmp","cdf","cgi","com","compressed","css","css2","csv","default","device","dif","dll","dv","eml","etc","exe","exe2","fla","gif","gz","htm","htm2","html","ico_plus","iff","image","img","ini","jfif","jpeg","jpg","js","lhz","lzh","mac","midi","mov","movie","mp2","mp3","mpe","mpeg","mpg","nws","pcx","ps","psd","qif","qt","qti","qtif","ra","ram","rar","rle","rm","rtf","rtf2","rv","sound","spl","swf","sys.gif","tar","text","tga","tgz","tif","tiff","txt","unknow","unknown","wav","wav2","wma","wmf","wmv","z"];
-	var extArrayPng = ["psd","7z","xls","xlsx","gz","msi","ttf","gif","tgz","mid","fla","bin","bat","mpeg","swf","flv","bmp","html","pdf","jar","ai","png","doc","docx","tmp","htm","zip","jpg","eml","dat","iso","wav","tif","php","rar","jpeg","ppt","pptx"];
-	var fileExtsnImg = "";
-	if(extArrayPng.indexOf(fileExtsn) != -1){
-		fileExtsnImg = '<img src="/images/ext/'+fileExtsn+'.png" style="height:20px;max-width:25px;margin-right:5px;"/>';
-	}else if(extArrayGif.indexOf(fileExtsn) != -1){
-		fileExtsnImg = '<img src="/images/ext/'+fileExtsn+'.gif" style="height:20px;max-width:25px;margin-right:5px;"/>';
-	}else{
-		fileExtsnImg = '<img src="/images/ext/etc.png" style="height:20px;max-width:25px;margin-right:5px;"/>';
-	}
-	return fileExtsnImg;
-}
-
-
-function gfnByteCalculation(bytes) {
-    var bytes = parseInt(bytes);
-    if(bytes < 0){
-		return 0+" bytes";
-	}
-    var s = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
-    var e = Math.floor(Math.log(bytes)/Math.log(1024));
-   
-    if(e == "-Infinity") return "0 "+s[0]; 
-    else 
-    return (bytes/Math.pow(1024, Math.floor(e))).toFixed(2)+" "+s[e];
-}
-
-
 
 Date.prototype.format = function(f) {
     if (!this.valueOf()) return " ";
@@ -1444,138 +880,6 @@ Date.prototype.format = function(f) {
 String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
 String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
 Number.prototype.zf = function(len){return this.toString().zf(len);};
- 
-
-jQuery.download = function(url, data, method){
-    if( url && data ){
-        toast.push("다운로드 준비중입니다.<br>페이지를 이동하지 말아주십시오.");
-        
-        data = typeof data == 'string' ? data : jQuery.param(data);
-        
-        var tagNameInputBox = $("iframe#tmpFrame").contents().find("input");
-        $("iframe#tmpFrame").contents().find("input").remove();
-        
-        
-        
-        var inputs = '';
-        jQuery.each(data.split('&'), function(){
-            var pair = this.split('=');
-            inputs = document.createElement("INPUT");
-            inputs.type = "hidden";
-            inputs.name = pair[0];
-            inputs.value = pair[1];
-            $("iframe#tmpFrame").contents().find("form").append(inputs);
-            
-        });
-        
-        $("iframe#tmpFrame").contents().find("form")[0].action = url;
-        $("iframe#tmpFrame").contents().find("form")[0].method = (method||'post');
-        $("iframe#tmpFrame").contents().find("form")[0].submit();
-        
-        
-        
-       
-    }else{
-        console.log("non data");
-    }
-};
-
-
-
-function gfnFileDownload(divElement,pdfDown,fileExtsn, event){
-	try{
-		event = event || window.event;
-		event.stopPropagation();
-	}catch(e){
-		
-		window.event.cancelBubble = true;
-	}
-	
-	var downAtchFileId = $(divElement).attr('atchId');
-	var downFileSn = $(divElement).attr('fileSn');
-	if(gfnIsNull(downAtchFileId) || gfnIsNull(downFileSn)){
-		alert("다운로드 실패");
-	}else{
-		
-		if((!gfnIsNull(fileExtsn) && fileExtsn.trim() == "pdf") || (gfnIsNull(pdfDown))){
-			var pdfFrame = window.open("/com/fms/pdfViewerPage.do?downAtchFileId="+downAtchFileId+"&downFileSn="+downFileSn, "_blank","location=no, menubar=no, width=1000,height=1000");
-		}else{
-			$.download('/com/fms/FileDown.do','downAtchFileId='+downAtchFileId+'&downFileSn='+downFileSn,'post');
-		}
-	}
-}
-
-
-function gfnFileDelete(divElement, event){
-	try{
-		event = event || window.event;
-		event.stopPropagation();
-	}catch(e){
-		
-		window.event.cancelBubble = true;
-	}
-	
-	
-	if(btnAuthDeleteYn != 'Y'){
-		jAlert('삭제 권한이 없습니다.', '알림창');
-		return false;
-	}
-
-	jConfirm("파일을 삭제하시겠습니까?", "알림창", function( result ) {
-		
-		if( result ){
-			
-			var atchFileId = $(divElement).attr('atchId');
-			var fileSn = $(divElement).attr('fileSn');
-			var prjId = $(divElement).attr('prjId');
-			var reqId = $(divElement).attr('reqId');
-			var deleteType = $(divElement).attr('deleteType');
-			
-			
-			if(typeof deleteType == "undefined" || deleteType == null){
-				deleteType = "normal";
-			}
-			
-			
-			var ajaxObj = new gfnAjaxRequestAction(
-					{"url":"/com/fms/FileDelete.do"}
-					,{ "atchFileId": atchFileId, "fileSn" : fileSn , "prjId": prjId, "reqId": reqId, "deleteType":deleteType});
-			
-			ajaxObj.setFnSuccess(function(data){
-				data = JSON.parse(data);
-		    	if(data.Success == 'Y'){
-		    		$(divElement).parent().parent().remove();
-		    		toast.push(data.message);
-		    	}else{
-		    		
-		    		if(!gfnIsNull(data.nonFile) && data.nonFile == "Y"){
-		    			$(divElement).parent().parent().remove();
-		    		}
-		    		toast.push(data.message);
-		    	}
-		  	  if(typeof fnSelHisInfoList == "function"){
-		  		fnSelHisInfoList();
-		  	  }
-			});
-			
-			
-			ajaxObj.setFnError(function(xhr, status, err){
-					
-				jAlert(xhr.statusText);
-			});
-			
-			ajaxObj.send();
-			
-			
-			function thisItemCancel(thisItem){
-				if($(thisItem) != null){
-					$(thisItem).sortable('cancel');
-				}
-			}
-
-		}
-	});    
-}
 
 
 function gfnCheckStrLength(str,len) {
@@ -1602,14 +906,6 @@ function gfnCheckStrLength(str,len) {
 	temp = temp.replace(/</g,"&lt;").replace(/>/g,"&gt;");
 	
 	return temp;
-}
-
-
-function gfnEnterAction(fnFullNm){
-	
-	if(event.keyCode == '13'){
-		eval(fnFullNm);
-	}
 }
 
 
@@ -1776,83 +1072,6 @@ function gfnIsLength(objName,objDesc,size){
 		return false;
 	}
 	
-}
-
-
-
-function gfnFileDragDropUpload(obj,returnFunction){
-	
-	
-	if(typeof btnAuthInsertYn == "undefined" || btnAuthInsertYn != 'Y'){
-		return false;
-	}
-    if(obj != null){
-    	obj.on('dragenter', function (e){
-    	    e.stopPropagation();
-    	    e.preventDefault();
-    	    $(obj).addClass('dragOn');
-    	});
-    	obj.on('dragover', function (e){
-    	     e.stopPropagation();
-    	     e.preventDefault();
-    	});
-    	obj.on('dragleave', function(e){
-    		$(obj).removeClass('dragOn');
-    	});
-    	
-    	obj.on('drop', function (e){
-    		
-    		e.preventDefault();
-    		$(obj).removeClass('dragOn');
-    		
-			if($(obj).is('.disabled')){
-				jAlert('미 사용중인 기능입니다.');
-				return false;
-			}
-    	    var files = e.originalEvent.dataTransfer.files;
-	   
-    	    
-    	    if(files.length > 5){
-    	    	toast.push("한번에 5개만 전송하실 수 있습니다.");
-    	    }else{
-    	    	 
-	    	     $.each(files,function(idx,map){
-	    	    	 if(!gfnIsNull(map)){
-	    	    		 
-	    	    		 
-	    	    		 ext =map.name.split(".").pop().toLowerCase();
-	    	    		 
-	    	    		 if(!gfnFileCheck(ext)){
-	    	    			 toast.push("확장자가 [ " +ext + " ] 인 파일은 첨부가 불가능 합니다.");
-	    	    			 return false;
-	    	    		 };
-	    	    		   
-	    	    		 
-	    	    		 if(map.size < 1){
-	    	    			 toast.push(map.name+"<br>파일의 크기가 0Byte인 경우 업로드가 불가능합니다.");
-	    	    		 }else{
-	    	    			 eval(returnFunction(map));
-	    	    		 }
-	    	    	 }
-	    	    	 
-	    	     });
-    	     }
-    	});
-    	$(document).on('dragenter', function (e){
-    	    e.stopPropagation();
-    	    e.preventDefault();
-    	});
-    	$(document).on('dragover', function (e){
-    	  e.stopPropagation();
-    	  e.preventDefault();
-    	  $(obj).removeClass('dragOn');
-    	});
-    	
-    	$(document).on('drop', function (e){
-    	    e.stopPropagation();
-    	    e.preventDefault();
-    	});
-	}
 }
 
 
@@ -2703,50 +1922,9 @@ function gfnLayerHighLight(objId){
     }
 }
 
-
-function gfnPrjGrpSetting(){
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm4000/cmm4000/selectCmm4000prjGrpSet.do"});
-	
-	ajaxObj.setFnSuccess(function(data) {
-		data = JSON.parse(data);
-    	
-    	
-    	if(data.errorYN == 'Y'){
-    		
-    		location.href= "/cmm/cmm4000/cmm4000/selectCmm4000View.do";
-    	}else{
-    		
-    		
-    		$('.prj_select_box > #header_grp_select > option').remove();
-    		
-    		
-    		$.each(data.prjGrpList,function(){
-    			$('.prj_select_box > #header_grp_select').append('<option value="'+this.prjGrpId+'">'+this.prjGrpNm+'</option>');
-    		});
-    		
-    		$(".prj_select_box > #header_grp_select > option[value="+data.selPrjGrpId+"]").attr("selected", "true");
-    		
-    		
-    		$('.prj_select_box > #header_select > option').remove();
-    		
-    		$.each(data.prjList,function(){
-    			$('.prj_select_box > #header_select').append('<option value="'+this.prjId+'">'+this.prjNm+'</option>');
-    		});
-    		
-    		$(".prj_select_box > #header_select > option[value="+data.selPrjId+"]").attr("selected", "true");
-    	}
-	});
-
-	
-	ajaxObj.send();
-}
-
 function searchEnterKey(e, obj){
 	if(e.keyCode == 13) axdom("#" + obj.getItemId("btn_search")).click();
 }
-
 
 
 
@@ -2813,46 +1991,12 @@ function gfnStrByteLen(str) {
 
 function gfnReqLink(reqLink){
 	
-	if(gfnIsNull(gfnReplace(reqLink, "http:
+	if(gfnIsNull(gfnReplace(reqLink, "http://","").trim()) || gfnIsNull(gfnReplace(reqLink, "https://","").trim())){
 		reqLink = "#";
 	}
 	return reqLink;
 }
 
-
-function gfnAlarmOpen(usrId, usrNm, reqId, reqNm, reqPrjId, reqPrjGrpId){
-	
-	var data = {
-		"sendChk": true,
-		"usrIdChk": usrId,
-		"usrNmChk": usrNm,
-		"arm_reqId":reqId,
-		"arm_reqNm":reqNm,
-		"reqPrjId":reqPrjId,
-		"reqPrjGrpId":reqPrjGrpId
-	};
-	gfnLayerPopupOpen('/arm/arm1000/arm1000/selectArm1000View.do',data,"1250","700",'scroll');
-}
-
-function gfnAlarmOpen2(thisObj){
-	var usrId = $(thisObj).data("usr-id");
-	var usrNm = $(thisObj).data("usr-nm");
-	var reqId = $(thisObj).data("req-id");
-	var reqNm = $(thisObj).data("req-nm");
-	var prjId = $(thisObj).data("prj-id");
-	var prjGrpId = $(thisObj).data("prj-grp-id");
-	
-	var data = {
-		"sendChk": true,
-		"usrIdChk": usrId,
-		"usrNmChk": usrNm,
-		"arm_reqId":reqId,
-		"arm_reqNm":reqNm,
-		"reqPrjId":prjId,
-		"reqPrjGrpId":prjGrpId
-	};
-	gfnLayerPopupOpen('/arm/arm1000/arm1000/selectArm1000View.do',data,"1250","700",'scroll');
-}
 
 function gfnDtmAgoStr(dateTime){
 	var subTime = new Date() - dateTime;
@@ -2884,85 +2028,38 @@ function gfnDtmAgoStr(dateTime){
 }
 
 
-function gfnGetServerTime(format){
-	var time="";
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/selectSelectServerTimeAjax.do","loadingShow":false}
-			,{"format" : format });
+function gfnHourCalc(totalSecond){
+	if(gfnIsNull(totalSecond)){
+		return "0초";
+	}
 	
-	ajaxObj.async = false;
+	var bldDurationStr = '';
+	
+	
+	var bldDurationHh = parseInt(totalSecond/3600);
 
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-		time=data.serverTime;		
-				
-	});
+	
+	var bldDurationMm = parseInt(totalSecond/60);
 	
 	
-	ajaxObj.setFnError(function(xhr, status, err){
-		var nowdate = new Date();
-		if("yyyy-mm-dd"==format){
-			time=nowdate.getFullYear()+"-"+ (nowdate.getMonth() + 1).zf(2) +"-"+nowdate.getDate().zf(2);
-		}else if("yyyy-mm"==format){
-			time=nowdate.getFullYear()+"-"+ (nowdate.getMonth() + 1).zf(2);
-		}
+	if(bldDurationHh > 0){
 		
 		
- 	});
+		bldDurationMm = parseInt((totalSecond-(bldDurationHh*3600))/60);
+		bldDurationStr = bldDurationHh+'시간 '+bldDurationMm+'분 ';
+	}
 	
-	ajaxObj.send();
-
-	return time;
+	else if(bldDurationMm > 0){
+		bldDurationStr = bldDurationMm+'분 ';
+	}
+	
+	
+	var bldDurationSs = parseInt(totalSecond%60);
+	bldDurationStr += bldDurationSs+'초';
+	
+	return bldDurationStr;
 }
 
-function gfnGetApikey(){
-	var key="";
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/selectApiKeyAjax.do"}
-			,{  });
-	
-	ajaxObj.async = false;
-
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-		key=data.apiKey;		
-				
-	});
-	
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-				
- 	});
-	
-	ajaxObj.send();
-
-	return key;
-}
-
-
-function gfnGetUrlList(){
-	var list=[];
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/selectUrlListAjax.do"}
-			,{  });
-	
-	ajaxObj.async = false;
-
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-		list=data.urlList;		
-				
-	});
-	
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-				
- 	});
-	
-	ajaxObj.send();
-
-	return list;
-}
 
 function gfnByteCheckEvent(eventIdList){
 	
@@ -3076,262 +2173,12 @@ function gfnCheckRow(selGrid,param){
 	gfnLayerPopupClose();
 }
 
-function gfnCommonUserPopup(param,isMulti,pFunc, paramPrjId){
-	commonPopFunction = pFunc;
-	var data={};
-	var ajaxParam = "";
-	var authParams = "";
-	
-	if(!gfnIsNull(paramPrjId)){
-		paramPrjId = paramPrjId;
-	}
-	
-	if(param instanceof Object){
-		
-		ajaxParam = "&searchPopTxt="+param.usrNm;
-		if(!gfnIsNull(param.authGrpIds)){
-			for(var i=0; i< param.authGrpIds.length; i++ ){
-				if(i==0){
-					authParams += param.authGrpIds[i];
-				}else{
-					authParams += "|"+param.authGrpIds[i];
-				}
-				ajaxParam += "&authGrpId="+param.authGrpIds[i];
-			}
-		}
-		
-		data = {
-				"usrNm"  : encodeURI(param.usrNm) , "authParams" : authParams ,   
-				"isMulti" : isMulti ,	"prjId": paramPrjId
-		};
-		
-		if(!gfnIsNull(param.acceptUseCd)){
-			data["acceptUseCd"] = param.acceptUseCd;
-			ajaxParam += "&acceptUseCd="+param.acceptUseCd;
-		}
-	}else{
-		data = {
-				"usrNm"  : encodeURI(param)  , "isMulti" : isMulti   ,	"prjId": paramPrjId
-			};
-		ajaxParam = "&searchPopTxt="+param;
-	}
-	gfnLayerPopupOpen('/cmm/cmm1000/cmm1000/selectCmm1000View.do',data, "680", "450",'scroll');
-
-}
-
-
-function gfnSelectCmm1000CommonUserList(ajaxParam){
-	var retObj = {};
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm1000/cmm1000/selectCmm1000CommonUserListAjax.do","loadingShow":false}
-			,ajaxParam);
-	
-	ajaxObj.setProperty({"async":false});
-	ajaxObj.setFnSuccess(function(data){
-		retObj = JSON.parse(data);	
-	});
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
-	});
-	
-	
-	ajaxObj.send();
-	return retObj;
-}
-
-
-function gfnInitDynamicComboBox(elementId, tableName, idColumn,nameColumn,conditionColumnNames){
-	
-	var param = {  "tableName" : tableName , "idColumn" : idColumn , "nameColumn" : nameColumn       };
-	var conditionColSize = 0;
-	if(!gfnIsNull(conditionColumnNames)){
-		$.each( conditionColumnNames, function(columnName, columnValue){
-			param["condCol"+conditionColSize] = columnName;
-			param["condVal"+conditionColSize] = columnValue;
-			conditionColSize++;	
-		});
-	}
-	
-	param["conditionColSize"] = conditionColSize;
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/selectDynamicComboBoxAjax.do"}
-			,param);
-	
-	ajaxObj.async = false;
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-    	var html = '';
-    	html += '<option value="">선 택</option>';
-    	$.each( data.comboList, function(idx, map){
-    		html += '<option value="'+ map.comboId +'" >'+ map.comboName +'</option>';
-    	});
-    	$('#'+elementId).html(html);
-	});
-	
-	ajaxObj.send();
-	
-}
-
-
-function gfnGetUpperDeptNames(selectDeptId){
-	
-	
-	var deptNames = "";
-	
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/adm/adm7000/adm7000/selectAdm7000UpperDeptListAjax.do"}
-			,{ "deptId" : selectDeptId});
-	
-	ajaxObj.setProperty({"async":false});
-	
-	
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-		
-		
-		var deptList = data.upperDeptList.reverse();
-		
-		
-		if( !gfnIsNull(deptList) ){
-			for (var i = 0; i < deptList.length; i++){
-				deptNames += deptList[i].deptName
-				if(i != deptList.length-1 ){
-					deptNames += " > ";
-				}
-			}
-		}
-	});
-	
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		jAlert(data.message,"알림창");
-		return;
-	});
-	
-	
-	ajaxObj.send();
-
-	return deptNames;
-}
-
 
 function gfnSvnRevisionPopup(prjId, callView, selBtnChk, pFunc){
 	commonPopFunction = pFunc;
 	var data = {"prjId": prjId, "callView" : callView, "selBtnChk": selBtnChk  }; 
 	 
 	gfnLayerPopupOpen("/cmm/cmm1000/cmm1400/selectCmm1400View.do", data, '1300', '850','scroll');	
-}
-
-
-
-function gfnCommonProjectPopup(param,pFunc){
-	commonPopFunction = pFunc;
-	var data = {
-			"prjNm"  : param   
-		};
-	gfnLayerPopupOpen("/cmm/cmm1000/cmm1100/selectCmm1100View.do", data, '810', '488','scroll');
-}
-
-
-function gfnCommonClsPopup(pFunc, param){
-	commonPopFunction = pFunc;
-	
-
-	var prjId = "";
-	if(!gfnIsNull(param) && param.hasOwnProperty("prjId") && !gfnIsNull(param.prjId)){
-		prjId = param.prjId;
-	}
-	var data = {"prjId": prjId};
-	gfnLayerPopupOpen('/cmm/cmm1000/cmm1500/selectCmm1500View.do',data, "480", "540",'scroll');
-}
-
-function gfnSelectClsTree(reqClsId,reqClsNm){
-	commonPopFunction(reqClsId,reqClsNm);
-	gfnLayerPopupClose();
-}
-
-
-
-function gfnCommonDeptPopup(searchDeptNm, pFunc){
-	commonPopFunction = pFunc;
-	var data = { "searchDeptNm"  : $.trim(searchDeptNm) };
-	
-	var retList = gfnSelectAdm7000DeptList($.trim(searchDeptNm));
-	
-	
-	if(gfnIsNull(retList.deptList)){
-		gfnLayerPopupOpen('/cmm/cmm1000/cmm1200/selectCmm1200View.do', data, "850", "671", 'auto');
-	}else{
-		
-		if(retList.deptList.length==1){
-			
-			var deptInfo = retList.deptList[0];
-			
-			
-			if(deptInfo.lvl != 0){
-
-				
-				var deptId = deptInfo.deptId;
-				
-				var deptNamesStr = gfnGetUpperDeptNames(deptInfo.deptId); 
-				commonPopFunction(deptId, deptNamesStr);
-			}
-			else{
-				
-				gfnLayerPopupOpen('/cmm/cmm1000/cmm1200/selectCmm1200View.do', data, "850", "671", 'auto');
-			}
-			
-		}else{
-			gfnLayerPopupOpen('/cmm/cmm1000/cmm1200/selectCmm1200View.do', data, "850", "671", 'auto');
-		}
-	}
-}
-
-
-function gfnSelectDeptTree(deptId,deptNm){
-	commonPopFunction(deptId,deptNm);
-	gfnLayerPopupClose();
-}
-
-
-function gfnSelectAdm7000DeptList(searchDeptNm){
-	
-	var retObj = {};
-	var sendData = { "viewType" : "cmm1200", "searchDeptNm" : searchDeptNm };
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/adm/adm7000/adm7000/selectAdm7000NormalDeptListAjax.do","loadingShow":false}
-			,sendData);
-	
-	ajaxObj.setProperty({"async":false});
-	
-	
-	ajaxObj.setFnSuccess(function(data){
-		retObj = JSON.parse(data);
-	});
-
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
-	});
-	
-	
-	ajaxObj.send();
-	
-	return retObj;
 }
 
 
@@ -3354,53 +2201,6 @@ function gfnGetDayAgo(date,day,format){
 	return time;
 }
 
-function gfnGetHtmlToPdf(obj,pdfName){
-	var doc = new jsPDF();
-	
-	var layerIndex = $("#pdfEditor").length;
-	if(layerIndex==0){
-		$("body").prepend('<div id="pdfEditor" ><div>');
-	}
-				
-	var specialElementHandlers = {
-			'#pdfEditor': function (element, renderer) {
-				 return true;
-			}
-	}
-	gfnShowLoadingBar(true);
-	html2canvas($(obj), {
-		  onrendered: function(canvas) {
-		 
-		    
-		    var imgData = canvas.toDataURL('image/png');
-		     
-		    var imgWidth = 210; 
-		    var pageHeight = imgWidth * 1.414;  
-		    var imgHeight = canvas.height * imgWidth / canvas.width;
-		    var heightLeft = imgHeight;
-		     
-		        var doc = new jsPDF('p', 'mm');
-		        var position = 0;
-		         
-		        
-		        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-		        heightLeft -= pageHeight;
-		         
-		        
-		        while (heightLeft >= 20) {
-		          position = heightLeft - imgHeight;
-		          doc.addPage();
-		          doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-		          heightLeft -= pageHeight;
-		        }
-		        gfnShowLoadingBar(false);
-		        
-		        doc.save(pdfName);
-		  }
-	});
-
-}
-
 
 function gfnTermValid(fisrtDom,secondDom,term){
 	var sFirstDay = $(fisrtDom).val();
@@ -3419,62 +2219,6 @@ function gfnTermValid(fisrtDom,secondDom,term){
 	}
 		
 	return isValid;
-}
-
-
-
-
-function gfnCommonAuthPopup(prjId, param, isMulti,pFunc){
-	commonPopFunction = pFunc;
-	var data={};
-	var ajaxParam = "";
-	
-	data = {
-			"prjId" : prjId , "authGrpNm"  : param  , "isMulti" : isMulti   
-		};
-	
-	ajaxParam = "&searchPopTxt="+param;
-	
-	if(!gfnIsNull(prjId)){
-		ajaxParam = "&prjId="+prjId;
-	}
-	
-	var authList = gfnSelectCmm1700CommonAuthList(ajaxParam);
-	if(gfnIsNull(authList )){
-		gfnLayerPopupOpen('/cmm/cmm1000/cmm1700/selectCmm1700View.do',data, "480", "450",'scroll');
-	}else{
-		if(authList.list.length==1){
-			commonPopFunction(authList.list);
-		}else{
-			gfnLayerPopupOpen('/cmm/cmm1000/cmm1700/selectCmm1700View.do',data, "480", "450",'scroll');
-		}
-	}
-}
-
-
-function gfnSelectCmm1700CommonAuthList(ajaxParam){
-	var retObj = {};
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm1000/cmm1700/selectCmm1700CommonAuthListAjax.do","loadingShow":false}
-			,ajaxParam);
-	
-	ajaxObj.setProperty({"async":false});
-	ajaxObj.setFnSuccess(function(data){
-		retObj = JSON.parse(data);	
-	});
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
-	});
-	
-	
-	ajaxObj.send();
-	return retObj;
 }
 
 
@@ -3532,15 +2276,6 @@ function gfnSelectCmm1600CommonDplList(ajaxParam){
 	ajaxObj.setProperty({"async":false});
 	ajaxObj.setFnSuccess(function(data){
 		retObj = JSON.parse(data);	
-	});
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
 	});
 	
 	
@@ -3610,63 +2345,6 @@ function gfnGetMonthAgo(date,day,format){
 	return time;
 }
 
-
-
-function gfnCommonProcessPopup(param,isMulti,pFunc){
-	commonPopFunction = pFunc;
-	var data={};
-	var ajaxParam = "";
-	
-	var processNm = "";
-	if(!gfnIsNull(param.processNm)){
-		processNm = param.processNm;
-	}
-
-
-	data = {
-			"processNm"  : processNm  , "isMulti" : isMulti   
-			   
-		};
-	
-	ajaxParam = "&searchPopTxt="+processNm;
-	
-	var dplList = gfnSelectCmm1800ProcessList(ajaxParam);
-	if(gfnIsNull(dplList )){
-		gfnLayerPopupOpen('/cmm/cmm1000/cmm1800/selectCmm1800View.do',data, "480", "423",'scroll');
-	}else{
-		if(dplList.list.length==1){
-			commonPopFunction(dplList.list);
-		}else{
-			gfnLayerPopupOpen('/cmm/cmm1000/cmm1800/selectCmm1800View.do',data, "480", "423",'scroll');
-		}
-	}
-}
-
-
-function gfnSelectCmm1800ProcessList(ajaxParam){
-	var retObj = {};
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm1000/cmm1800/selectCmm1800ProcessListAjax.do","loadingShow":false}
-			,ajaxParam);
-	
-	ajaxObj.setProperty({"async":false});
-	ajaxObj.setFnSuccess(function(data){
-		retObj = JSON.parse(data);	
-	});
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
-	});
-	
-	
-	ajaxObj.send();
-	return retObj;
-}
 
 function gfnGuideBoxDraw(type,$mainFrame,guideBoxInfo){
 	
@@ -3899,174 +2577,6 @@ function gfnGuideKeyAction(){
 }
 
 
-
-function gfnLicGrpAllProjectSetting(searchObj, showSearchKey, hideSearchKey){
-	
-	
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/prj/prj1000/prj1000/selectPrj1000ProjectGroupListAjax.do"
-			,"loadingShow":false,"async":false});
-	
-	
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-
-		
-		if(data.errorYn == "Y"){
-			toast.push(data.message);
-			return false;
-		}
-		
-		
-		var prjList = data.prjList;
-		
-		
-		var prjStr = "";
-		
-		
-		var prjCnt = prjList.length - 1;
-		
-		
-		$(prjList).each(function(idx, map) {
-
-			
-			if(map.prjGrpCd == "01" && map.leaf == 0){
-				
-				
-				if(idx != 0){
-					prjStr += "</optgroup>";
-				}
-				
-				prjStr += "<optgroup label=[그룹]"+map.prjNm+" value="+map.prjId+">";
-			}
-			
-			
-			if(map.prjGrpCd == "02"){
-				
-				
-				prjStr += "<option value="+map.prjId+">"+map.prjNm+"</option>";
-				
-				
-				if(idx == prjCnt){
-					prjStr += "</optgroup>";
-				}
-			}
-		});
-		
-		
-		axdom("#"+searchObj.getItemId(showSearchKey)).html(prjStr);
-		
-		
-		axdom("#" + searchObj.getItemId(showSearchKey)).show();
-		axdom("#" + searchObj.getItemId(hideSearchKey)).hide();
-	});
-	
-	
-	ajaxObj.setFnError(function(xhr, status, err){
-		
-       	if(status == "999"){
-       		alert('세션이 만료되어 로그인 페이지로 이동합니다.');
-    		document.location.href="<c:url value='/cmm/cmm4000/cmm4000/selectCmm4000View.do'/>";
-    		return;
-       	}
-	});
-	
-	
-	ajaxObj.send();
-}
-
-
-function gfnAlarmCheckPopOpen(gridItem, armOpt){
-	
-	
-	if(armOpt == "req"){
-		
-		
-		var reqId = gridItem.reqId;
-		var reqNm = gridItem.reqNm;
-		
-		
-		var armUsrId = gridItem.reqChargerId;
-		
-		var armUsrNm = gridItem.reqChargerNm;
-		
-		
-		if(gfnIsNull(gridItem.reqChargerId)){
-			
-			armUsrId = gridItem.reqUsrId;
-			armUsrNm = gridItem.reqUsrNm;
-		}
-		
-		
-		gfnAlarmOpen(armUsrId, armUsrNm, reqId, reqNm);
-	
-	
-	}else if(armOpt == "signChk"){
-		
-		var signUsrId = gridItem.signUsrId;
-		var signUsrNm = gridItem.signUsrNm;
-		
-		
-		if(gfnIsNull(signUsrId)){
-			signUsrId = gridItem.regUsrId;
-			signUsrNm = gridItem.regUsrNm;
-		}
-		
-		
-		var reqId = gridItem.reqId;
-		var reqNm = gridItem.reqNm;
-		
-		
-		if(!gfnIsNull(reqId) && !gfnIsNull(reqNm)){
-			
-			gfnAlarmOpen(signUsrId, signUsrNm, reqId, reqNm);
-		}else{
-			
-			gfnAlarmOpen(signUsrId, signUsrNm);
-		}
-		
-	
-	}else if(armOpt == "signReq"){
-		
-		var signUsrId = gridItem.signUsrId;
-		var signUsrNm = gridItem.signUsrNm;
-		
-		
-		var reqId = gridItem.reqId;
-		var reqNm = gridItem.reqNm;
-		
-		
-		if(!gfnIsNull(reqId) && !gfnIsNull(reqNm)){
-			
-			gfnAlarmOpen(signUsrId, signUsrNm, reqId, reqNm);
-		}else{
-			
-			gfnAlarmOpen(signUsrId, signUsrNm);
-		}
-	
-		
-	}else if(armOpt == "usr"){
-		
-		var usrId = gridItem.usrId;
-		var usrNm = gridItem.usrNm;
-		
-		
-		gfnAlarmOpen(usrId, usrNm);
-	
-	
-	}else if(armOpt == "reqGrp"){
-		
-		var usrId = gridItem.reqGrpUsrId;
-		var usrNm = gridItem.reqGrpUsrNm;
-		
-		
-		gfnAlarmOpen(usrId, usrNm);
-	}
-	
-}
-
-
-
 function gfnGetBrowserType(){
 	
 	
@@ -4116,151 +2626,4 @@ function gfnEscapeHtml(sValue){
 	}catch(error){
 		return "";
 	}
-}
-
-function gfnReqGrpPopup(reqGrpNm, pFunc){
-	commonPopFunction = pFunc;
-	
-	var data = {"reqGrpNm": reqGrpNm};
-	gfnLayerPopupOpen("/req/req3000/req3000/selectReq3004View.do", data, '1350', '860','scroll');	
-}
-
-
-function gfnTestScenPopup(scenNm, pFunc){
-	commonPopFunction = pFunc;
-	
-	var data = {"scenNm": scenNm};
-	gfnLayerPopupOpen("/tes/tes1000/tes1000/selectTes1006View.do", data, '1350', '891','scroll');	
-}
-
-
-function gfnFlowNotLinkReqPopup(prjId, processId, flowId, reqId, pFunc){
-	
-	commonPopFunction = pFunc;
-	var data = {"prjId": prjId, "processId" : processId , "flowId" : flowId, "reqId" : reqId }; 
-	 
-	gfnLayerPopupOpen("/req/req4000/req4100/selectReq4112View.do", data, '1200', '780','scroll');	
-}
-
-
-function gfnFlowNotLinkDocPopup(prjId, processId, flowId, reqId, pFunc){
-	
-	commonPopFunction = pFunc;
-	var data = {"prjId": prjId, "processId" : processId , "flowId" : flowId, "reqId" : reqId }; 
-	 
-	gfnLayerPopupOpen("/req/req4000/req4100/selectReq4117View.do", data, '1200', '780','scroll');	
-}
-
-
-function gfnAsideRefresh(option){
-
-	var ajaxObj = new gfnAjaxRequestAction(
-			{"url":"/cmm/cmm9000/cmm9000/selectCmm9000LeftMenuPartData.do","loadingShow":false},
-			{"asideMenu":option});
-	
-	ajaxObj.setFnSuccess(function(data){
-		data = JSON.parse(data);
-		
-		
-		if(data.errorYn != "Y"){
-			
-			var rtnMap = data.rtnMap;
-			
-			
-			if(option == "sign"){
-				
-				var signWaitList = rtnMap.signWaitList;
-	        	
-	        	var allSignWaitCnt = parseInt(signWaitList.allSignWaitCnt);
-	        	
-	        	var reqSignWaitCnt = parseInt(signWaitList.reqSignWaitCnt);
-	        	
-	        	var dplSignWaitCnt = parseInt(signWaitList.dplSignWaitCnt);
-	        	
-	        	
-	        	if(allSignWaitCnt > 0){
-	        		
-	        		$("#dtUsrSignWait").addClass("newAlarm");
-	        	}else{
-	        		$("#dtUsrSignWait").removeClass("newAlarm");
-	        	}
-				
-	        	
-	        	allSignWaitCnt 	= (allSignWaitCnt > 999) ? "999+" : allSignWaitCnt;
-				
-	        	
-				$("#spanUsrSignWait").html(allSignWaitCnt);
-				
-				$("#sign_reqCnt").html(reqSignWaitCnt);
-				
-				$("#sign_dplCnt").html(dplSignWaitCnt);
-				
-				$("#sign_delegateCnt").append(reqSignDelegateCnt);
-				
-			
-			}else if(option == "request"){
-				
-				var myReqCnt = rtnMap.requestAndChargeList;
-				
-	        	var requestCnt = parseInt(myReqCnt.requestCnt);
-				
-	        	var chargeCnt = parseInt(myReqCnt.chargeCnt);
-				
-				
-	        	requestCnt 	= (requestCnt > 999) ? "999+" : requestCnt; 
-	        	chargeCnt 	= (chargeCnt > 999) ? "999+" : chargeCnt; 
-				
-	        	
-	        	$("#spanRegUsrReq").html(requestCnt);
-				
-	        	$("#spanChargerReq").html(chargeCnt);
-				
-	        	
-	        	var allReqList = rtnMap.allReqList;
-				
-				var allReqCnt = parseInt(allReqList.allCnt);
-				
-				var acceptCnt = parseInt(allReqList.acceptCnt);
-				
-				var doCnt = parseInt(allReqList.doCnt);
-				
-				var doneCnt = parseInt(allReqList.doneCnt);
-				
-				var rejectCnt = parseInt(allReqList.rejectCnt);
-				
-				var signRejectCnt = parseInt(allReqList.signRejectCnt);
-				
-				var middleDoneCnt = parseInt(allReqList.middleDoneCnt);
-				
-				
-				allReqCnt = (allReqCnt > 999) ? "999+" : allReqCnt; 
-				acceptCnt = (acceptCnt > 999) ? "999+" : acceptCnt;
-				
-				
-				var allReqTooltip = "전체 요구사항 건수 입니다. 클릭 시 처리 유형별 건수를 확인할 수 있습니다. (총 "+ allReqList.allCnt +"건)";
-				$("#dtAllReq").attr("title", allReqTooltip);
-				$("#spanAllReq").html(allReqCnt);
-				
-				
-				var acceptReqTooltip = "접수 대기 상세 요구사항 건수입니다. (총 "+ allReqList.acceptCnt +"건)";
-				$("#dtAcceptReq").attr("title", acceptReqTooltip);
-				$("#spanAcceptReq").html(acceptCnt);
-				
-				
-				$("#req_acceptCnt").html(allReqList.acceptCnt);
-				$("#req_doCnt").html(doCnt);
-				$("#req_doneCnt").html(doneCnt);
-				$("#req_rejectCnt").html(rejectCnt);
-				$("#req_signRejectCnt").html(signRejectCnt);
-				$("#req_middleDoneCnt").html(middleDoneCnt);
-			}
-		}
-		else{
-			toast.push('좌측 정보 조회 실패');
-		}
-	});
-	
-	
-	ajaxObj.send();
-	
 }

@@ -1,8 +1,10 @@
 package kr.opensoftlab.lunaops.rep.rep1000.rep1000.web;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.http.HttpStatus;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,8 +27,8 @@ import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.service.EgovProperties;
 import egovframework.rte.fdl.property.EgovPropertyService;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import kr.opensoftlab.lunaops.com.api.service.ApiService;
 import kr.opensoftlab.lunaops.com.exception.UserDefineException;
-import kr.opensoftlab.lunaops.com.vo.LoginVO;
 import kr.opensoftlab.lunaops.rep.rep1000.rep1000.service.Rep1000Service;
 import kr.opensoftlab.lunaops.rep.rep1000.rep1000.vo.Rep1000VO;
 import kr.opensoftlab.sdf.rep.com.RepModule;
@@ -34,6 +38,7 @@ import kr.opensoftlab.sdf.rep.com.vo.RepVO;
 import kr.opensoftlab.sdf.rep.svn.SVNConnector;
 import kr.opensoftlab.sdf.util.CommonScrty;
 import kr.opensoftlab.sdf.util.OslAgileConstant;
+import kr.opensoftlab.sdf.util.OslUtil;
 import kr.opensoftlab.sdf.util.PagingUtil;
 import kr.opensoftlab.sdf.util.RequestConvertor;
 
@@ -78,8 +83,47 @@ public class Rep1000Controller {
 	private RepModule repModule;
 	
 	
+	@Resource(name = "apiService")
+	private ApiService apiService;
+	
+	
 	@RequestMapping(value="/rep/rep1000/rep1000/selectRep1000RepositoryView.do")
 	public String selectRep1000RepositoryView(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
+		
+		try {
+			
+			String salt = EgovProperties.getProperty("Globals.data.salt");
+			
+			
+			JSONObject jsonObj = (JSONObject) request.getAttribute("decodeJsonData");
+			
+			
+			jsonObj.put("current_date", new Date().getTime());
+			
+			
+			byte[] arr = new byte[8];
+	        new Random().nextBytes(arr);
+	        
+	        StringBuilder result = new StringBuilder();
+	        for (byte temp : arr) {
+	            result.append(String.format("%02x", temp));
+	        }
+
+			
+			jsonObj.put("lunaCheckCode", result.toString());
+			
+			
+			request.getSession().setAttribute("lunaCheckCode", result.toString());
+			
+			
+			String rtnData = CommonScrty.encryptedAria(jsonObj.toString(), salt);
+			
+			model.put("rtnData", rtnData);
+		}catch(Exception e) {
+			Log.error(e);
+			e.printStackTrace();
+		}
+		
 		return "/rep/rep1000/rep1000/rep1000";
 	}
 
@@ -110,22 +154,9 @@ public class Rep1000Controller {
 			rep1000VO.setPageUnit(_pageSize);
 			
 			
-			PaginationInfo paginationInfo = PagingUtil.getPaginationInfo(rep1000VO);  
+			PaginationInfo paginationInfo = PagingUtil.getPaginationInfo(rep1000VO); 
 
 			List<Rep1000VO> rep1000List = null;
-
-			HttpSession ss = request.getSession();
-			LoginVO loginVO = (LoginVO) ss.getAttribute("loginVO");
-
-			
-			String prjId = paramMap.get("prjId");
-			
-			
-			if(prjId == null) {
-				prjId = (String) ss.getAttribute("selPrjId");
-			}
-			
-			rep1000VO.setLoginUsrId(loginVO.getUsrId());
 
 			
 			int totCnt = 0;
@@ -189,6 +220,65 @@ public class Rep1000Controller {
 	
 	@RequestMapping(value="/rep/rep1000/rep1000/selectRep1002View.do")
 	public String selectRep1002View(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
+		try {
+			
+			Map<String, String> paramMap = RequestConvertor.requestParamToMapAddSelInfo(request, true);
+						
+			
+			String repId = paramMap.get("repId");
+			
+			if(repId != null) {
+				
+				String lunaCheckCode = (String) request.getSession().getAttribute("lunaCheckCode");
+				
+				
+				if(lunaCheckCode == null) {
+					response.setStatus(HttpStatus.SC_BAD_REQUEST);
+					model.put("errorMsg", "인증 코드를 읽는 중 오류가 발생했습니다.");
+					return "/err/error";
+				}
+				
+				String data = (String) paramMap.get("data");
+				
+				
+				Object checkParam = apiService.checkParamDataKey(data);
+				
+				
+				if(checkParam instanceof String) {
+					model.put("errorMsg", "오류 코드: "+ checkParam.toString());
+					return "/err/error";
+				}else {
+					
+					JSONObject jsonObj = (JSONObject) checkParam;
+					
+					
+					if(!jsonObj.has("lunaCheckCode")) {
+						response.setStatus(HttpStatus.SC_METHOD_NOT_ALLOWED);
+						model.put("errorMsg", "인증 코드를 읽는 중 오류가 발생했습니다.");
+						return "/err/error";
+					}
+					
+					String jsonLunaCheckCode = OslUtil.jsonGetString(jsonObj, "lunaCheckCode");
+					
+					if(jsonLunaCheckCode == null || !jsonLunaCheckCode.equals(lunaCheckCode)) {
+						response.setStatus(HttpStatus.SC_METHOD_NOT_ALLOWED);
+						model.put("errorMsg", "인증 코드를 읽는 중 오류가 발생했습니다.");
+						return "/err/error";
+					}
+				}
+			}else {
+				JSONObject jsonObj = (JSONObject) request.getAttribute("decodeJsonData");
+				
+				
+				repId = OslUtil.jsonGetString(jsonObj, "repId");
+			}
+			model.put("repId", "repId");
+			
+		}catch(Exception e) {
+			response.setStatus(HttpStatus.SC_BAD_REQUEST);
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
 		return "/rep/rep1000/rep1000/rep1002";
 	}
 
@@ -242,8 +332,8 @@ public class Rep1000Controller {
 	
 	
 	@SuppressWarnings("unused")
-	@RequestMapping(value="/rep/rep1000/rep1000/saveSvn2000InfoAjax.do")
-	public ModelAndView saveSvn2000InfoAjax(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
+	@RequestMapping(value="/rep/rep1000/rep1000/saveRep1000InfoAjax.do")
+	public ModelAndView saveRep1000InfoAjax(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
 
 		try{
 			
@@ -353,7 +443,7 @@ public class Rep1000Controller {
 			return new ModelAndView("jsonView");
 		}
 		catch(Exception ex){
-			Log.error("saveSvn2000InfoAjax()", ex);
+			Log.error("saveRep1000InfoAjax()", ex);
 
 			
 			model.addAttribute("saveYN", "N");
@@ -363,23 +453,39 @@ public class Rep1000Controller {
 	}
 	
 	
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="/rep/rep1000/rep1000/deleteRep1000InfoAjax.do")
 	public ModelAndView deleteRep1000InfoAjax(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
-
 		try{
-
 			
-			Map<String, String> paramMap = RequestConvertor.requestParamToMapAddSelInfo(request, true);
+			Map<String, Object> paramMap = RequestConvertor.requestParamToMapAddSelInfoList(request, true, "repId");
 			
-			int useCount = rep1000Service.selectRep1000UseCountInfo(paramMap);
-			if(useCount==0){
-				rep1000Service.deleteRep1000Info(paramMap);
+			List paramRepIds = (List) paramMap.get("list");
+			
+			
+			int paramRepIdCnt = 0;
+			if(paramRepIds != null) {
+				paramRepIdCnt = paramRepIds.size();
+			}
+			
+			
+			int succCnt = rep1000Service.deleteRep1000List(paramMap);
+			
+			if(paramRepIdCnt != 0 && succCnt > 0){
+				model.addAttribute("errorYn", "N");
 				
-				model.addAttribute("message", egovMessageSource.getMessage("success.common.delete"));
-			}else{
+				String addMsg = "";
 				
-				model.addAttribute("saveYN", "N");
-				model.addAttribute("message", egovMessageSource.getMessage("fail.common.existInfo"));
+				if(succCnt != paramRepIdCnt) {
+					addMsg = "</br>(구성항목에 배정되어있는 저장소 삭제 대상에서 제외)";
+				}
+				
+				
+				model.addAttribute("message", "선택된 데이터 "+paramRepIdCnt+"건 중 "+succCnt+"건이 삭제되었습니다."+addMsg);
+			}else {
+				model.addAttribute("errorYn", "Y");
+				
+				model.addAttribute("message", "삭제 대상 저장소가 없습니다.");
 			}
 			
 			return new ModelAndView("jsonView");
@@ -388,7 +494,7 @@ public class Rep1000Controller {
 			Log.error("deleteRep1000InfoAjax()", ex);
 
 			
-			model.addAttribute("saveYN", "N");
+			model.addAttribute("errorYn", "Y");
 			model.addAttribute("message", egovMessageSource.getMessage("fail.common.save"));
 			return new ModelAndView("jsonView");
 		}
@@ -689,10 +795,6 @@ public class Rep1000Controller {
 			
 			Map paramMap = RequestConvertor.requestParamToMap(request,true);
 
-			
-			HttpSession ss = request.getSession();
-			paramMap.put("prjId", ss.getAttribute("selPrjId"));
-			paramMap.put("authGrpId", ss.getAttribute("selAuthGrpId"));
 			Long revision =0l;
 			
 			if(paramMap.get("revision")!=null){
@@ -788,6 +890,60 @@ public class Rep1000Controller {
 		}
 		catch(Exception ex){
 			Log.error("selectRep1006FileDiffContentAjax()", ex);
+			
+			if(ex instanceof SVNAuthenticationException ){
+				model.addAttribute("MSG_CD", Rep1000Controller.REP_AUTHENTICATION_EXCEPTION);
+			}else if(ex instanceof SVNException ){
+				model.addAttribute("MSG_CD", Rep1000Controller.REP_EXCEPTION);
+			} else{
+				model.addAttribute("MSG_CD", Rep1000Controller.REP_EXCEPTION);
+			}
+			
+			
+			model.addAttribute("message", egovMessageSource.getMessage("fail.common.select"));
+			return new ModelAndView("jsonView");
+		}
+	}
+	
+	
+	@SuppressWarnings({ "rawtypes" })
+	@RequestMapping(value="/rep/rep1000/rep1000/saveRep1001RepTreeListAjax.do")
+	public ModelAndView saveRep1001RepTreeListAjax(HttpServletRequest request, HttpServletResponse response, ModelMap model ) throws Exception {
+
+		try{
+			
+			
+			Map<String, String> paramMap = RequestConvertor.requestParamToMapAddSelInfo(request, true);
+			
+			
+			RepVO repVo = new RepVO();
+			
+			
+			String svnRepUrl = (String) paramMap.get("svnRepUrl");
+			String svnUsrId = (String) paramMap.get("svnUsrId");
+			String svnUsrPw = (String) paramMap.get("svnUsrPw");
+			String repTypeCd = (String) paramMap.get("repTypeCd");
+			
+			repVo.setSvnRepUrl(svnRepUrl);
+			repVo.setSvnUsrId(svnUsrId);
+			repVo.setSvnUsrPw(svnUsrPw);
+			repVo.setRepTypeCd(repTypeCd);
+			
+			
+			repVo.setGitRepUrlCheckCd(true);
+
+			
+			String path = (String) paramMap.get("path");
+			
+			List<Map> list = repModule.getPathList(repVo, path, null);
+			model.addAttribute("list", list);
+			
+			
+			model.addAttribute("message", egovMessageSource.getMessage("success.common.select"));
+			return new ModelAndView("jsonView");
+		}
+		catch(Exception ex){
+			Log.error("saveRep1001RepTreeListAjax()", ex);
 			
 			if(ex instanceof SVNAuthenticationException ){
 				model.addAttribute("MSG_CD", Rep1000Controller.REP_AUTHENTICATION_EXCEPTION);

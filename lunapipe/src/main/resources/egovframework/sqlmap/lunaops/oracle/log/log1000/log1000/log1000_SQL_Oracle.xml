@@ -3,39 +3,19 @@
 
 <sqlMap namespace="log1000DAO">
 	 
-    <typeAlias alias="log1000VO"	type="kr.opensoftlab.lunaops.adm.adm5000.log1000.vo.Log1000VO"/>
+    <typeAlias alias="log1000VO"	type="kr.opensoftlab.lunaops.log.log1000.log1000.vo.Log1000VO"/>
 	<typeAlias alias="egovMap"	 	type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
-	
-	
-   	<resultMap id="resultMapSelectLog1000" class="log1000VO">
-			<result property="rn"			column="RN"/>
-			<result property="logUsrId"   column="LOG_USR_ID"/>
-			<result property="logTime"    column="LOG_TIME"/>
-			<result property="logIp"      column="LOG_IP"/>
-			<result property="logUsrNm"   column="USR_NM"/>
-			<result property="menuId"   column="MENU_ID"/>
-			<result property="menuNm"   column="MENU_NM"/>
-			<result property="menuUrl"   column="MENU_URL"/>
-			<result property="menuCd"   column="MENU_CD"/>
-    </resultMap>
 	
 	
 	
 	<sql id="selectLog1000List">
 				SELECT 
 						T1.LOG_USR_ID
-						, to_char(T1.LOG_TIME,'YYYY-MM-DD HH24:MI:SS') as LOG_TIME /* 로그 일시 */
+						, to_char(T1.LOG_TIME,'YYYY-MM-DD HH24:MI:SS') as LOG_TIME 
 						,T1.LOG_IP
 						,T1.LOG_URL
 						,NVL(T2.USR_NM,'-') USR_NM
-						,T1.MENU_ID
-						,T1.MENU_NM
-						,T1.MENU_URL
-						,T1.MENU_CD
-				FROM 
-						LOG1000 T1,
-						ADM2000 T2
-				WHERE T1.LOG_USR_ID = T2.USR_ID 
+				FROM LOG1000 T1 LEFT JOIN USR1000 T2 ON (T1.LOG_USR_ID = T2.USR_ID)
 				<isNotEmpty property="searchSelect" >
 					<isNotEmpty property="searchTxt">
 					<isEqual property="searchSelect" compareValue="logUsrId">
@@ -49,16 +29,6 @@
 					</isEqual>
 					</isNotEmpty>
 				</isNotEmpty>
-				<isEqual property="searchSelect" compareValue="menuCd">
-				<isNotEmpty property="searchCd">
-					<isNotEqual property="searchCd" compareValue="09">
-						AND		T1.MENU_CD = #searchCd#
-					</isNotEqual>
-					<isEqual property="searchCd" compareValue="09">
-						AND		T1.MENU_CD = #searchCd#
-					</isEqual>
-				</isNotEmpty>
-				</isEqual>
 				<isNotEmpty property="srchFromDt">
 					AND T1.LOG_TIME &gt;= TO_DATE(#srchFromDt#, 'YYYY-MM-DD')
 				</isNotEmpty>
@@ -70,7 +40,7 @@
     
     
     <select id="log1000DAO.selectLog1000List" parameterClass="log1000VO"  resultClass="egovMap">
-	    /*log1000DAO.selectLog1000List  시스템 사용 이력 로그 목록을 조회한다.*/
+	    
 		SELECT *
 		FROM
 			(
@@ -86,7 +56,7 @@
     
     
     <select id="log1000DAO.selectLog1000ListCnt" parameterClass="log1000VO"  resultClass="java.lang.Integer">
-	    /*log1000DAO.selectLog1000ListCnt  시스템 사용 이력 로그 목록 총건수를 조회한다.*/
+	    
 	    SELECT
 			COUNT(*)
 		FROM	(
@@ -96,7 +66,7 @@
 	
 	
 	<select id="log1000DAO.selectLog1000ExcelList" parameterClass="log1000VO"  resultClass="egovMap">
-	    /*log1000DAO.selectLog1000ExcelList  시스템 사용 이력 로그 목록엑셀 을 조회한다.*/
+	    
 
 		<include refid="selectLog1000List"/>
 
@@ -105,18 +75,22 @@
 	
 	<insert id="log1000DAO.insertLog1000SystemUseLog" parameterClass="log1000VO">
 		<![CDATA[ 
-			/* log1000DAO.insertLog1000SystemUseLog - 시스템 사용이력 쌓기  쌓기  */
+			
 			INSERT INTO LOG1000
             (	
-            	LOG_TIME,	LOG_URL,	LOG_USR_ID,		
-            	LOG_IP,			MENU_ID,	MENU_NM,	MENU_URL,
-            	MENU_CD
+            		LOG_SEQ
+            	,	LOG_TIME,	LOG_URL,	LOG_USR_ID,		LOG_IP,		LOG_TYPE,	LOG_AJAX_CD
+            	,	LOG_PARAM_DATA1
+            	,	LOG_PARAM_DATA2
+            	,	LOG_PARAM_DATA3
             )
             VALUES
             (
-            	SYSDATE,	#logUrl#,	#logUsrId#,	
-            	#logIp#,		#menuId#,	#menuNm#,	#menuUrl#,
-            	#menuCd#
+            		LIC_SEQ.NEXTVAL
+            	,	SYSDATE,	#logUrl#,	#logUsrId#,		#logIp#,	#logType#,	#logAjaxCd#
+            	,	#logParamData1#
+            	,	#logParamData2#
+            	,	#logParamData3#
             )
 		]]>
 	</insert>
